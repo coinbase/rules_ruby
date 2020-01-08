@@ -1,6 +1,6 @@
 load(
     "{rules_ruby_workspace}//ruby:defs.bzl",
-    "ruby_library",
+    "rb_library",
     "ruby_toolchain",
 )
 

@@ -4,7 +4,7 @@
   * [WORKSPACE File](#workspace-file)
   * [BUILD.bazel files](#buildbazel-files)
 * [Rules](#rules)
-  * [ruby_library](#ruby_library)
+  * [rb_library](#rb_library)
   * [rb_binary](#rb_binary)
   * [ruby_test](#ruby_test)
   * [ruby_bundle](#ruby_bundle)
@@ -88,18 +88,18 @@ ruby_bundle(
 
 ### `BUILD.bazel` files
 
-Add `ruby_library`, `rb_binary` or `ruby_test` into your `BUILD.bazel` files.
+Add `rb_library`, `rb_binary` or `ruby_test` into your `BUILD.bazel` files.
 
 ```python
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
     "rb_binary",
-    "ruby_library",
+    "rb_library",
     "ruby_test",
     "ruby_rspec",
 )
 
-ruby_library(
+rb_library(
     name = "foo",
     srcs = glob(["lib/**/*.rb"]),
     includes = ["lib"],
@@ -133,15 +133,15 @@ ruby_rspec(
 
 ## Rules
 
-The following diagram attempts to capture the implementation behind `ruby_library` that depends on the result of `bundle install`, and a `rb_binary` that depends on both:
+The following diagram attempts to capture the implementation behind `rb_library` that depends on the result of `bundle install`, and a `rb_binary` that depends on both:
 
 ![Ruby Rules](docs/img/rules_ruby.png)
 
 
-### `ruby_library`
+### `rb_library`
 
 <pre>
-ruby_library(name, deps, srcs, data, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility)
+rb_library(name, deps, srcs, data, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">
@@ -377,7 +377,7 @@ ruby_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, 
 
 ### `ruby_bundle`
 
-Installs gems with Bundler, and make them available as a `ruby_library`.
+Installs gems with Bundler, and make them available as a `rb_library`.
 
 Example: `WORKSPACE`:
 
@@ -410,7 +410,7 @@ ruby_bundle(
 Example: `lib/BUILD.bazel`:
 
 ```python
-ruby_library(
+rb_library(
     name = "foo",
     srcs = ["foo.rb"],
     deps = ["@gems//:all"],

@@ -3,7 +3,7 @@ package(default_visibility = ["//:__subpackages__"])
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
     "rb_binary",
-    "ruby_library",
+    "rb_library",
     "ruby_rspec",
     "ruby_test",
 )
@@ -23,7 +23,7 @@ filegroup(
     ]),
 )
 
-ruby_library(
+rb_library(
     name = "lib",
     srcs = [
         ":sources",

@@ -4,7 +4,7 @@ load(
 )
 load(
     "@coinbase_rules_ruby//ruby/private:library.bzl",
-    _library = "ruby_library",
+    _library = "rb_library",
 )
 load(
     "@coinbase_rules_ruby//ruby/private:binary.bzl",
@@ -22,7 +22,7 @@ load(
 )
 
 ruby_toolchain = _toolchain
-ruby_library = _library
+rb_library = _library
 rb_binary = _binary
 ruby_test = _test
 ruby_rspec_test = _ruby_rspec_test
