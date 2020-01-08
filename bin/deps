@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
 # vim: ft=sh
 
-export BashMatic="${HOME}/.bashmatic"
-
-if [[ ! -f "${BashMatic}/init.sh" ]]; then
-  rm -rf "${BashMatic}" 2>/dev/null
-  git clone https://github.com/kigster/bashmatic "${BashMatic}" 1>/dev/null 2>&1
-fi
-
-# shellcheck disable=SC1090
-source "${BashMatic}/init.sh" 1>/dev/null 2>&1
-
 __version::detect() {
   local file="$1"
   if [[ -f ${file} ]]; then
