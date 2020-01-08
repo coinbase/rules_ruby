@@ -22,6 +22,15 @@ commands:
           command: |
             sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
             && sudo chmod +x /usr/bin/bazel
+  
+  bazel-build-test-all:
+    description: "Bazel build and test all"
+    steps:
+      - run:
+          name: "Bazel Build & Test"
+          command: |
+            bazel build //...:all \
+            && bazel test //...:all \
 
 jobs:
   rubocop:
@@ -44,27 +53,20 @@ jobs:
     steps:
       - checkout
       - setup-bazel-env
+      - bazel-build-test-all 
           
-      - run:
-          name: "Bazel Build & Test Workspace"
-          command: |
-            bazel build //...:all \
-            && bazel test //...:all \
-
-  bazel_build_examples:
+  bazel_build_examples_simple_script:
     executor: base-executor
     working_directory: ~/project/examples/simple_script
     steps:
       - checkout:
           path: ~/project
       - setup-bazel-env
+      - bazel-build-test-all 
       
       - run:
-          name: "Bazel Build & Test Example"
+          name: "Simple Script: Run bin and rubocop"
           command: |
-            cd examples/simple_script \
-            && bazel build //...:all \
-            && bazel test //...:all \
             && bazel run :bin \
             && bazel run :rubocop
 
@@ -84,6 +86,6 @@ workflows:
   rules_ruby:
     jobs:
       - bazel_build_workspace
-      - bazel_build_examples
+      - bazel_build_examples_simple_script
       - buildifier
       - rubocop
