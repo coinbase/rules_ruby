@@ -67,7 +67,7 @@ jobs:
       - run:
           name: "Simple Script: Run bin and rubocop"
           command: |
-            && bazel run :bin \
+            bazel run :bin \
             && bazel run :rubocop
 
   buildifier:
