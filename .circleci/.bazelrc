@@ -1,5 +1,6 @@
 # Startup options
 startup --max_idle_secs=1
+startup --host_jvm_args=-Xmx500m
 
 # Common options
 common --announce_rc
@@ -17,5 +18,5 @@ build --jobs=10
 
 # Test options
 test --spawn_strategy=standalone
-test --test_output=errors 
+test --test_output=all
 test --test_verbose_timeout_warnings 
