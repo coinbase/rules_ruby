@@ -17,12 +17,6 @@ jobs:
       - checkout
 
       - run:
-          name: "Install bazelisk"
-          command: |
-            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
-            && sudo chmod +x /usr/bin/bazel
-          
-      - run:
           name: Install Bundler
           command: |
             gem install bundler:2.0.2 --no-doc
@@ -50,6 +44,7 @@ jobs:
 
   bazel_build_examples:
     <<: *bazel_defaults
+    working_directory: /home/circleci/repo/examples/simple_script
 
     steps:
       - checkout
@@ -63,7 +58,11 @@ jobs:
       - run:
           name: "Bazel Build & Test Example"
           command: |
-            /usr/bin/env bash bin/test-suite simple-script
+            bazel ${BAZEL_OPTS} info \
+            && bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} //...:all \
+            && bazel ${BAZEL_OPTS} test ${BAZEL_BUILD_OPTS} ${BAZEL_TEST_OPTS} //...:all
+            && bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} //:bin \
+            && bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} //:rubocop \
 
   buildifier:
     <<: *bazel_defaults
@@ -117,3 +116,4 @@ workflows:
       - bazel_build_examples
       - buildifier
       - travis-test-suite
+      - rubocop
