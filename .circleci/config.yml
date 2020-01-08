@@ -44,8 +44,6 @@ jobs:
 
   bazel_build_examples:
     <<: *bazel_defaults
-    working_directory: /home/circleci/repo/examples/simple_script
-
     steps:
       - checkout
 
@@ -58,7 +56,8 @@ jobs:
       - run:
           name: "Bazel Build & Test Example"
           command: |
-            bazel ${BAZEL_OPTS} info \
+            cd examples/simple_script \
+            && bazel ${BAZEL_OPTS} info \
             && bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} //...:all \
             && bazel ${BAZEL_OPTS} test ${BAZEL_BUILD_OPTS} ${BAZEL_TEST_OPTS} //...:all \
             && bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} :bin \
