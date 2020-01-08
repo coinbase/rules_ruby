@@ -88,52 +88,6 @@ class String
   # @formatter:on
 end
 
-class Buildifier
-  attr_reader :build_file, :output_file
-
-  # @formatter:off
-  class BuildifierError < StandardError; end
-  class BuildifierNotFoundError < BuildifierError; end
-  class BuildifierFailedError < BuildifierError; end
-  class BuildifierNoBuildFileError < BuildifierError; end
-  # @formatter:on
-
-  def initialize(build_file)
-    @build_file = build_file
-
-    # For capturing buildifier output
-    @output_file = ::Tempfile.new("/tmp/#{File.dirname(File.absolute_path(build_file))}/#{build_file}.stdout").path
-  end
-
-  def buildify!
-    raise BuildifierNoBuildFileError, 'Can\'t find the BUILD file' unless File.exist?(build_file)
-
-    # see if we can find buildifier on the filesystem
-    buildifier = `bash -c 'command -v buildifier'`.strip
-
-    raise BuildifierNotFoundError, 'Can\'t find buildifier' unless buildifier && File.executable?(buildifier)
-
-    command = "#{buildifier} -v #{File.absolute_path(build_file)}"
-    system("/usr/bin/env bash -c '#{command} 1>#{output_file} 2>&1'")
-    code = $?
-
-    output = File.read(output_file).strip.gsub(Dir.pwd, '.').yellow
-    begin
-      FileUtils.rm_f(output_file)
-    rescue StandardError
-      nil
-    end
-
-    if code == 0
-      puts 'Buildifier gave 👍 '.green + (output ? " and said: #{output}" : '')
-    else
-      raise BuildifierFailedError,
-            'Generated BUILD file failed buildifier, with error — '.red + "\n\n" +
-            File.read(output_file).yellow
-    end
-  end
-end
-
 class BundleBuildFileGenerator
   attr_reader :workspace_name,
               :repo_name,
@@ -252,10 +206,4 @@ if $0 == __FILE__
                                workspace_name: workspace_name)
     .generate!
 
-  begin
-    Buildifier.new(build_file).buildify!
-    puts("Buildifier successful on file #{build_file} ")
-  rescue Buildifier::BuildifierError => e
-    warn("ERROR running buildifier on the generated build file [#{build_file}] ➔ \n#{e.message.orange}")
-  end
 end
