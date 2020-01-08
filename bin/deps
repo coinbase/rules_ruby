@@ -46,8 +46,5 @@ deps::print-duration() {
   info "Total running time for was ${bldylw}$(lib::time::duration::millis-to-secs ${duration}) seconds.\n\n"
 }
 
-
-run::set-all abort-on-error
-
 # ensure we can exit with Ctrl-C
 trap exit 1 INT
