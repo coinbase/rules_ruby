@@ -11,8 +11,7 @@
 * [What's coming next](#whats-coming-next)
 * [Contributing](#contributing)
   * [Setup](#setup)
-    * [Using the Script](#using-the-script)
-    * [OS-Specific Setup](#os-specific-setup)
+    * [OSX Setup Script](#os-setup-script)
       * [Issues During Setup](#issues-during-setup)
   * [Developing Rules](#developing-rules)
   * [Running Tests](#running-tests)
@@ -43,12 +42,12 @@ Note: we have a short guide on [Building your first Ruby Project](https://github
 Add `rules_ruby_dependencies` and `ruby_register_toolchains` into your `WORKSPACE` file.
 
 ```python
-# To get the latest, grab the 'develop' branch.
+# To get the latest, grab the 'master' branch.
 
 git_repository(
     name = "coinbase_rules_ruby",
     remote = "https://github.com/coinbase/rules_ruby.git",
-    branch = "develop",
+    branch = "master",
 )
 
 load(
@@ -487,56 +486,25 @@ ruby_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
 
 ## Contributing
 
-We welcome contributions to RulesRuby. Please make yourself familiar with the [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) document.
+We welcome contributions to RulesRuby.
 
 You may notice that there is more than one Bazel WORKSPACE inside this repo. There is one in `examples/simple_script` for instance, because
 we use this example to validate and test the rules. So be mindful whether your current directory contains `WORKSPACE` file or not.
 
 ### Setup
 
-#### Using the Script
+#### OSX Setup Script
 
 You will need Homebrew installed prior to running the script.
 
 After that, cd into the top level folder and run the setup script in your Terminal:
 
 ```bash
-❯ bin/setup
+❯ bin/setup-darwin
 ```
-
-This runs a complete setup, shouldn't take too long. You can explore various script options with the `help` command:
-
-```bash
-❯ bin/setup help
-USAGE
-  # without any arguments runs a complete setup.
-  bin/setup
-
-  # alternatively, a sub-setup function name can be passed:
-  bin/setup [ gems | git-hook | help | os-specific | main | remove-git-hook ]
-
-DESCRIPTION:
-  Runs full setup without any arguments.
-
-  Accepts one optional argument — one of the actions that typically run
-  as part of setup, with one exception — remove-git-hook.
-  This action removes the git commit hook installed by the setup.
-
-EXAMPLES:
-    bin/setup — runs the entire setup.
-```
-
-#### OS-Specific Setup
-
-Note that the setup contains `os-specific` section. This is because there are two extension scripts:
-
- * `bin/setup-darwin`
-
-Those will install Bazel and everything else you need on either platform.
-
 ##### Issues During Setup
 
-**Please report any errors to `bin/setup` as Issues on Github.**
+**Please report any errors as Issues on Github.**
 
 ### Developing Rules
 
@@ -567,17 +535,10 @@ But to run tests inside each sub-WORKSPACE, you will need to repeat that in each
 
 ### Linter
 
-We are using RuboCop for ruby and Buildifier for Bazel. Both are represented by a single script `bin/linter`, which just like the scripts above runs ALL linters when ran without arguments, accepts `help` commnd, and can be run on a subset of linting strategies:
+We are using RuboCop for ruby and Buildifier for Bazel. Both can be run using bazel:
 
 ```bash
-bin/linter
-```
-
-The following are the partial linting functions you can run:
-
-```bash
-# alternatively, a partial linter name can be passed:
-bin/linter [ all | buildifier | help | rubocop ]
+bazel run //:buildifier
 ```
 
 ## Copyright
