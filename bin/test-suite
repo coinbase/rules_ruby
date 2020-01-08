@@ -128,21 +128,6 @@ $(help-example bin/test-suite simple-example)
   exit 0
 }
 
-# Runs Rubocop Tests
-test::rubocop() {
-  __test::exec rubocop "
-    bundle install --path=${BUNDLE_PATH}
-    bundle exec rubocop -E -D .rubocop.yml --force-exclusion
-  "
-}
-
-# Runs Buildifier
-test::buildifier() {
-  __test::exec buildifier "
-    bazel run :buildifier-check
-  "
-}
-
 # Builds and runs workspace inside examples/simple_script
 test::simple-script() {
   __test::exec simple-script "
@@ -180,8 +165,6 @@ test::all() {
   test::bazel-info
   test::workspace
   test::simple-script
-  test::buildifier
-  test::rubocop
   test::rspec
 }
 
