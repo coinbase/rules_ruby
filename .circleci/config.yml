@@ -87,9 +87,33 @@ jobs:
           command: |
             bazel ${BAZEL_OPTS} run   ${BAZEL_BUILD_OPTS} :buildifier-check
 
+  # This is here for the travis removal. Will determine usefulness after.
+  travis-test-suite:
+    <<: *bazel_defaults
+
+    steps:
+      - checkout
+
+      - run:
+          name: "Install ~/.bazelrc and run setup"
+          command: |
+            cp .circleci/.bazelrc ${HOME}
+            /usr/bin/env bash bin/setup
+
+      - run:
+          name: "Bazel Build & Test"
+          command: |
+            /usr/bin/env bash bin/test-suite
+      
+      - run:
+          name: "Show env"
+          command: |
+            /usr/bin/env bash bin/show-env
+
 workflows:
   rules_ruby:
     jobs:
       - bazel_build_workspace
       - bazel_build_examples
       - buildifier
+      - travis-test-suite
