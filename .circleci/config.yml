@@ -9,9 +9,8 @@ jobs:
     environment:
       PATH: "/usr/local/bin:/usr/bin:/sbin:/opt/bin:/home/circleci/repo/bin:/bin:/sbin:/usr/sbin"
       BUNDLE_PATH: /home/circleci/.bundle_cache
-      BAZEL_OPTS: "--max_idle_secs=1 --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=/home/circleci/repo/.circleci/.bazelrc"
-      BAZEL_BUILD_OPTS: "--curses=no --verbose_failures --jobs 10 --announce_rc"
-      BAZEL_TEST_OPTS: "--verbose_failures --test_output=streamed --test_verbose_timeout_warnings --announce_rc"
+      BAZEL_OPTS: "--host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=/home/circleci/repo/.circleci/.bazelrc"
+      BAZEL_TEST_OPTS: "--test_output=streamed"
 
     steps:
       - checkout
@@ -41,8 +40,8 @@ jobs:
           name: "Bazel Build & Test Workspace"
           command: |
             bazel ${BAZEL_OPTS} info \
-            && bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} //...:all \
-            && bazel ${BAZEL_OPTS} test ${BAZEL_BUILD_OPTS} ${BAZEL_TEST_OPTS} //...:all \
+            && bazel ${BAZEL_OPTS} build //...:all \
+            && bazel ${BAZEL_OPTS} test ${BAZEL_TEST_OPTS} //...:all \
 
   bazel_build_examples:
     <<: *bazel_defaults
@@ -60,10 +59,10 @@ jobs:
           command: |
             cd examples/simple_script \
             && bazel ${BAZEL_OPTS} info \
-            && bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} //...:all \
-            && bazel ${BAZEL_OPTS} test ${BAZEL_BUILD_OPTS} ${BAZEL_TEST_OPTS} //...:all \
-            && bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} :bin \
-            && bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} :rubocop \
+            && bazel ${BAZEL_OPTS} build //...:all \
+            && bazel ${BAZEL_OPTS} test ${BAZEL_TEST_OPTS} //...:all \
+            && bazel ${BAZEL_OPTS} run :bin \
+            && bazel ${BAZEL_OPTS} run :rubocop \
 
   buildifier:
     <<: *bazel_defaults
@@ -80,12 +79,12 @@ jobs:
       - run:
           name: "Bazel Buildifier Build"
           command: |
-            bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} :buildifier-check
+            bazel ${BAZEL_OPTS} build :buildifier-check
 
       - run:
           name: "Bazel Buildifier Run"
           command: |
-            bazel ${BAZEL_OPTS} run ${BAZEL_BUILD_OPTS} :buildifier-check
+            bazel ${BAZEL_OPTS} run :buildifier-check
 
 workflows:
   rules_ruby:
