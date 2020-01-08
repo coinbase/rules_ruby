@@ -16,7 +16,7 @@ commands:
       - run:
           name: "Setup bazelrc"
           command: |
-            cp .circleci/.bazelrc ~/.bazelrc
+            cp ~/project/.circleci/.bazelrc ~/.bazelrc
       - run:
           name: "Install bazelisk"
           command: |
