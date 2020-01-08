@@ -3,7 +3,7 @@ package(default_visibility = ["//:__subpackages__"])
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
     "rb_binary",
-    "ruby_test",
+    "rb_test",
 )
 
 rb_binary(

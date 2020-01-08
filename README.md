@@ -6,7 +6,7 @@
 * [Rules](#rules)
   * [rb_library](#rb_library)
   * [rb_binary](#rb_binary)
-  * [ruby_test](#ruby_test)
+  * [rb_test](#rb_test)
   * [ruby_bundle](#ruby_bundle)
 * [What's coming next](#whats-coming-next)
 * [Contributing](#contributing)
@@ -88,14 +88,14 @@ ruby_bundle(
 
 ### `BUILD.bazel` files
 
-Add `rb_library`, `rb_binary` or `ruby_test` into your `BUILD.bazel` files.
+Add `rb_library`, `rb_binary` or `rb_test` into your `BUILD.bazel` files.
 
 ```python
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
     "rb_binary",
     "rb_library",
-    "ruby_test",
+    "rb_test",
     "ruby_rspec",
 )
 
@@ -116,7 +116,7 @@ rb_binary(
     deps = [":foo"],
 )
 
-ruby_test(
+rb_test(
     name = "foo-test",
     srcs = ["test/foo_test.rb"],
     deps = [":foo"],
@@ -294,10 +294,10 @@ rb_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs, 
   </tbody>
 </table>
 
-### `ruby_test`
+### `rb_test`
 
 <pre>
-ruby_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, size, timeout, flaky, local, shard_count)
+rb_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, size, timeout, flaky, local, shard_count)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">

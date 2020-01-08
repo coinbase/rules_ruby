@@ -75,7 +75,7 @@ rb_binary = rule(
     toolchains = [TOOLCHAIN_TYPE_NAME],
 )
 
-ruby_test = rule(
+rb_test = rule(
     implementation = rb_binary_impl,
     attrs = RUBY_ATTRS,
     test = True,
