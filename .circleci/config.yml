@@ -48,21 +48,21 @@ jobs:
       - run:
           name: "Bazel Build & Test Workspace"
           command: |
-            bazel info \
-            && bazel build //...:all \
+            bazel build //...:all \
             && bazel test //...:all \
 
   bazel_build_examples:
     executor: base-executor
+    working_directory: ~/project/examples/simple_script
     steps:
-      - checkout
+      - checkout:
+          path: ~/project
       - setup-bazel-env
       
       - run:
           name: "Bazel Build & Test Example"
           command: |
             cd examples/simple_script \
-            && bazel info \
             && bazel build //...:all \
             && bazel test //...:all \
             && bazel run :bin \
@@ -75,11 +75,6 @@ jobs:
       - checkout
       - setup-bazel-env
           
-      - run:
-          name: "Bazel Buildifier Build"
-          command: |
-            bazel build :buildifier-check
-
       - run:
           name: "Bazel Buildifier Run"
           command: |
