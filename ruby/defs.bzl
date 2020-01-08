@@ -24,8 +24,17 @@ load(
     "@coinbase_rules_ruby//ruby/private/rubocop:def.bzl",
     _rubocop = "rubocop",
 )
+load(
+    "@coinbase_rules_ruby//ruby/private:gemspec.bzl",
+    _gemspec = "rb_gemspec",
+)
+load(
+    "@coinbase_rules_ruby//ruby/private:gem.bzl",
+    _gem = "rb_gem",
+)
 
 ruby_toolchain = _toolchain
+
 rb_library = _library
 rb_binary = _binary
 rb_test = _test
@@ -34,3 +43,5 @@ rb_rspec = _rb_rspec
 rubocop = _rubocop
 bundle_install = _rb_bundle
 rb_bundle = _rb_bundle
+rb_gemspec = _gemspec
+rb_gem = _gem
