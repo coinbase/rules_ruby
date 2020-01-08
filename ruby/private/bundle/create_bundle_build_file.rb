@@ -4,18 +4,18 @@
 TEMPLATE = <<~MAIN_TEMPLATE
   load(
     "{workspace_name}//ruby:defs.bzl",
-    "ruby_library",
+    "rb_library",
   )
 
   package(default_visibility = ["//visibility:public"])
 
-  ruby_library(
+  rb_library(
     name = "bundler_setup",
     srcs = ["lib/bundler/setup.rb"],
     visibility = ["//visibility:private"],
   )
 
-  ruby_library(
+  rb_library(
     name = "bundler",
     srcs = glob(
       include = [
@@ -29,7 +29,7 @@ TEMPLATE = <<~MAIN_TEMPLATE
 MAIN_TEMPLATE
 
 GEM_TEMPLATE = <<~GEM_TEMPLATE
-  ruby_library(
+  rb_library(
     name = "{name}",
     srcs = glob(
       include = [
@@ -45,7 +45,7 @@ GEM_TEMPLATE = <<~GEM_TEMPLATE
 GEM_TEMPLATE
 
 ALL_GEMS = <<~ALL_GEMS
-  ruby_library(
+  rb_library(
     name = "gems",
     srcs = glob(
       {gems_lib_files},

@@ -139,7 +139,7 @@ def generate_bundle_build_file(runtime_ctx):
     if result.return_code:
         fail("build file generation failed: %s%s" % (result.stdout, result.stderr))
 
-def _ruby_bundle_impl(ctx):
+def _rb_bundle_impl(ctx):
     ctx.symlink(ctx.attr.gemfile, "Gemfile")
     ctx.symlink(ctx.attr.gemfile_lock, "Gemfile.lock")
     ctx.symlink(ctx.attr._create_bundle_build_file, SCRIPT_BUILD_FILE_GENERATOR)
@@ -174,7 +174,7 @@ def _ruby_bundle_impl(ctx):
     # 4. Generate the BUILD file for the bundle
     generate_bundle_build_file(runtime_ctx)
 
-ruby_bundle = repository_rule(
-    implementation = _ruby_bundle_impl,
+rb_bundle = repository_rule(
+    implementation = _rb_bundle_impl,
     attrs = BUNDLE_ATTRS,
 )

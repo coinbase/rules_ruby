@@ -84,7 +84,7 @@ def runfiles_envvar(runfiles)
   end
 end
 
-def find_ruby_binary
+def find_rb_binary
   File.join(
     RbConfig::CONFIG['bindir'],
     RbConfig::CONFIG['ruby_install_name'],
@@ -103,7 +103,7 @@ def main(args)
   runfiles_envkey, runfiles_envvalue = runfiles_envvar(runfiles)
   ENV[runfiles_envkey] = runfiles_envvalue if runfiles_envkey
 
-  ruby_program = find_ruby_binary
+  ruby_program = find_rb_binary
 
   main = {main}
   main = File.join(runfiles, main)

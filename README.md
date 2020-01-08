@@ -4,10 +4,10 @@
   * [WORKSPACE File](#workspace-file)
   * [BUILD.bazel files](#buildbazel-files)
 * [Rules](#rules)
-  * [ruby_library](#ruby_library)
-  * [ruby_binary](#ruby_binary)
-  * [ruby_test](#ruby_test)
-  * [ruby_bundle](#ruby_bundle)
+  * [rb_library](#rb_library)
+  * [rb_binary](#rb_binary)
+  * [rb_test](#rb_test)
+  * [rb_bundle](#rb_bundle)
 * [What's coming next](#whats-coming-next)
 * [Contributing](#contributing)
   * [Setup](#setup)
@@ -61,7 +61,7 @@ rules_ruby_dependencies()
 ruby_register_toolchains()
 ```
 
-Next, add any external Gem dependencies you may have via `ruby_bundle` command.
+Next, add any external Gem dependencies you may have via `rb_bundle` command.
 The name of the bundle becomes a reference to this particular Gemfile.lock.
 
 Install external gems that can be later referenced as `@<bundle-name>//:<gem-name>`,
@@ -71,14 +71,14 @@ for instance, `@bundle//:bin/rubocop`.
 You can install more than one bundle per WORKSPACE, but that's not recommended.
 
 ```python
-ruby_bundle(
+rb_bundle(
   name = "bundle",
   gemfile = ":Gemfile",
   gemfile_lock = ":Gemfile.lock",
   bundler_version = "2.1.2",
 )
 
-ruby_bundle(
+rb_bundle(
   name = "bundle_app_shopping",
   gemfile = "//apps/shopping:Gemfile",
   gemfile_lock = "//apps/shopping:Gemfile.lock",
@@ -88,18 +88,18 @@ ruby_bundle(
 
 ### `BUILD.bazel` files
 
-Add `ruby_library`, `ruby_binary` or `ruby_test` into your `BUILD.bazel` files.
+Add `rb_library`, `rb_binary` or `rb_test` into your `BUILD.bazel` files.
 
 ```python
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
-    "ruby_binary",
-    "ruby_library",
-    "ruby_test",
-    "ruby_rspec",
+    "rb_binary",
+    "rb_library",
+    "rb_test",
+    "rb_rspec",
 )
 
-ruby_library(
+rb_library(
     name = "foo",
     srcs = glob(["lib/**/*.rb"]),
     includes = ["lib"],
@@ -110,19 +110,19 @@ ruby_library(
     ]
 )
 
-ruby_binary(
+rb_binary(
     name = "bar",
     srcs = ["bin/bar"],
     deps = [":foo"],
 )
 
-ruby_test(
+rb_test(
     name = "foo-test",
     srcs = ["test/foo_test.rb"],
     deps = [":foo"],
 )
 
-ruby_rspec(
+rb_rspec(
     name = "foo-spec",
     specs = glob(["spec/**/*.rb"]),
     rspec_args = { "--format": "progress" },
@@ -133,15 +133,15 @@ ruby_rspec(
 
 ## Rules
 
-The following diagram attempts to capture the implementation behind `ruby_library` that depends on the result of `bundle install`, and a `ruby_binary` that depends on both:
+The following diagram attempts to capture the implementation behind `rb_library` that depends on the result of `bundle install`, and a `rb_binary` that depends on both:
 
 ![Ruby Rules](docs/img/rules_ruby.png)
 
 
-### `ruby_library`
+### `rb_library`
 
 <pre>
-ruby_library(name, deps, srcs, data, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility)
+rb_library(name, deps, srcs, data, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">
@@ -213,10 +213,10 @@ ruby_library(name, deps, srcs, data, compatible_with, deprecation, distribs, fea
   </tbody>
 </table>
 
-### `ruby_binary`
+### `rb_binary`
 
 <pre>
-ruby_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, output_licenses)
+rb_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, output_licenses)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">
@@ -294,10 +294,10 @@ ruby_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs
   </tbody>
 </table>
 
-### `ruby_test`
+### `rb_test`
 
 <pre>
-ruby_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, size, timeout, flaky, local, shard_count)
+rb_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, size, timeout, flaky, local, shard_count)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">
@@ -375,9 +375,9 @@ ruby_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, 
   </tbody>
 </table>
 
-### `ruby_bundle`
+### `rb_bundle`
 
-Installs gems with Bundler, and make them available as a `ruby_library`.
+Installs gems with Bundler, and make them available as a `rb_library`.
 
 Example: `WORKSPACE`:
 
@@ -398,9 +398,9 @@ rules_ruby_dependencies()
 
 ruby_register_toolchains()
 
-load("@coinbase_rules_ruby//ruby:defs.bzl", "ruby_bundle")
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
-ruby_bundle(
+rb_bundle(
     name = "gems",
     gemfile = "//:Gemfile",
     gemfile_lock = "//:Gemfile.lock",
@@ -410,7 +410,7 @@ ruby_bundle(
 Example: `lib/BUILD.bazel`:
 
 ```python
-ruby_library(
+rb_library(
     name = "foo",
     srcs = ["foo.rb"],
     deps = ["@gems//:all"],
@@ -420,7 +420,7 @@ ruby_library(
 Or declare many gems in your `Gemfile`, and only use some of them in each ruby library:
 
 ```python
-ruby_binary(
+rb_binary(
     name = "rubocop",
     srcs = [":foo", ".rubocop.yml"],
     args = ["-P", "-D", "-c" ".rubocop.yml"],
@@ -430,7 +430,7 @@ ruby_binary(
 ```
 
 <pre>
-ruby_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
+rb_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
 </pre>
 <table class="table table-condensed table-bordered table-params">
   <colgroup>

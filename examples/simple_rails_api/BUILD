@@ -2,11 +2,11 @@ package(default_visibility = ["//:__subpackages__"])
 
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
-    "ruby_binary",
-    "ruby_test",
+    "rb_binary",
+    "rb_test",
 )
 
-ruby_binary(
+rb_binary(
     name = "server",
     srcs = glob(
         include = [
