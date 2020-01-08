@@ -530,10 +530,9 @@ EXAMPLES:
 
 Note that the setup contains `os-specific` section. This is because there are two extension scripts:
 
- * `bin/setup-linux`
  * `bin/setup-darwin`
 
-Those will install Bazel and everything else you need on either platform. In fact, we use the linux version on CI.
+Those will install Bazel and everything else you need on either platform.
 
 ##### Issues During Setup
 
