@@ -9,8 +9,7 @@ jobs:
     environment:
       PATH: "/usr/local/bin:/usr/bin:/sbin:/opt/bin:/home/circleci/repo/bin:/bin:/sbin:/usr/sbin"
       BUNDLE_PATH: /home/circleci/.bundle_cache
-      BAZEL_OPTS: "--host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=/home/circleci/repo/.circleci/.bazelrc"
-      BAZEL_TEST_OPTS: "--test_output=streamed"
+      BAZEL_OPTS: "--bazelrc=/home/circleci/repo/.circleci/.bazelrc"
 
     steps:
       - checkout
@@ -41,7 +40,7 @@ jobs:
           command: |
             bazel ${BAZEL_OPTS} info \
             && bazel ${BAZEL_OPTS} build //...:all \
-            && bazel ${BAZEL_OPTS} test ${BAZEL_TEST_OPTS} //...:all \
+            && bazel ${BAZEL_OPTS} test //...:all \
 
   bazel_build_examples:
     <<: *bazel_defaults
@@ -60,7 +59,7 @@ jobs:
             cd examples/simple_script \
             && bazel ${BAZEL_OPTS} info \
             && bazel ${BAZEL_OPTS} build //...:all \
-            && bazel ${BAZEL_OPTS} test ${BAZEL_TEST_OPTS} //...:all \
+            && bazel ${BAZEL_OPTS} test //...:all \
             && bazel ${BAZEL_OPTS} run :bin \
             && bazel ${BAZEL_OPTS} run :rubocop \
 
