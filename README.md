@@ -26,10 +26,7 @@
 
 | Build | Status |
 |---------:	|---------------------------------------------------------------------------------------------------------------------------------------------------	|
-| CircleCI Develop: 	| [![CircleCI](https://circleci.com/gh/bazelruby/rules_ruby/tree/develop.svg?style=svg)](https://circleci.com/gh/bazelruby/rules_ruby/tree/develop) 	|
-| CircleCI Default: 	| [![CircleCI](https://circleci.com/gh/bazelruby/rules_ruby.svg?style=svg)](https://circleci.com/gh/bazelruby/rules_ruby) 	|
-| Develop: 	| [![Build Status](https://travis-ci.org/bazelruby/rules_ruby.svg?branch=develop)](https://travis-ci.org/bazelruby/rules_ruby) 	|
-| Master: 	| [![Build Status](https://travis-ci.org/bazelruby/rules_ruby.svg?branch=master)](https://travis-ci.org/bazelruby/rules_ruby) 	|
+| CircleCI Master: 	| [![CircleCI](https://circleci.com/gh/coinbase/rules_ruby.svg?style=svg)](https://circleci.com/gh/coinbase/rules_ruby) 	|
 
 
 # Rules Ruby
@@ -38,30 +35,30 @@ Ruby rules for [Bazel](https://bazel.build).
 
 ** Current Status:** *Work in progress.*
 
-Note: we have a short guide on [Building your first Ruby Project](https://github.com/bazelruby/rules_ruby/wiki/Build-your-ruby-project) on the Wiki. We encourage you to check it out.
+Note: we have a short guide on [Building your first Ruby Project](https://github.com/coinbase/rules_ruby/wiki/Build-your-ruby-project) on the Wiki. We encourage you to check it out.
 
 ## Usage
 
 ### `WORKSPACE` File
 
-Add `ruby_rules_dependencies` and `ruby_register_toolchains` into your `WORKSPACE` file.
+Add `rules_ruby_dependencies` and `ruby_register_toolchains` into your `WORKSPACE` file.
 
 ```python
 # To get the latest, grab the 'develop' branch.
 
 git_repository(
-    name = "bazelruby_ruby_rules",
-    remote = "https://github.com/bazelruby/rules_ruby.git",
+    name = "coinbase_rules_ruby",
+    remote = "https://github.com/coinbase/rules_ruby.git",
     branch = "develop",
 )
 
 load(
-    "@bazelruby_ruby_rules//ruby:deps.bzl",
+    "@coinbase_rules_ruby//ruby:deps.bzl",
     "ruby_register_toolchains",
-    "ruby_rules_dependencies",
+    "rules_ruby_dependencies",
 )
 
-ruby_rules_dependencies()
+rules_ruby_dependencies()
 
 ruby_register_toolchains()
 ```
@@ -97,7 +94,7 @@ Add `ruby_library`, `ruby_binary` or `ruby_test` into your `BUILD.bazel` files.
 
 ```python
 load(
-    "@bazelruby_ruby_rules//ruby:defs.bzl",
+    "@coinbase_rules_ruby//ruby:defs.bzl",
     "ruby_binary",
     "ruby_library",
     "ruby_test",
@@ -140,7 +137,7 @@ ruby_rspec(
 
 The following diagram attempts to capture the implementation behind `ruby_library` that depends on the result of `bundle install`, and a `ruby_binary` that depends on both:
 
-![Ruby Rules](docs/img/ruby_rules.png)
+![Ruby Rules](docs/img/rules_ruby.png)
 
 
 ### `ruby_library`
@@ -388,22 +385,22 @@ Example: `WORKSPACE`:
 
 ```python
 git_repository(
-    name = "bazelruby_ruby_rules",
-    remote = "https://github.com/bazelruby/rules_ruby.git",
+    name = "coinbase_rules_ruby",
+    remote = "https://github.com/coinbase/rules_ruby.git",
     tag = "v0.1.0",
 )
 
 load(
-    "@bazelruby_ruby_rules//ruby:deps.bzl",
+    "@coinbase_rules_ruby//ruby:deps.bzl",
     "ruby_register_toolchains",
-    "ruby_rules_dependencies",
+    "rules_ruby_dependencies",
 )
 
-ruby_rules_dependencies()
+rules_ruby_dependencies()
 
 ruby_register_toolchains()
 
-load("@bazelruby_ruby_rules//ruby:defs.bzl", "ruby_bundle")
+load("@coinbase_rules_ruby//ruby:defs.bzl", "ruby_bundle")
 
 ruby_bundle(
     name = "gems",

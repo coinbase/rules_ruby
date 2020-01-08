@@ -136,13 +136,6 @@ test::rubocop() {
   "
 }
 
-# Runs Buildifier
-test::buildifier() {
-  __test::exec buildifier "
-    bazel run :buildifier-check
-  "
-}
-
 # Builds and runs workspace inside examples/simple_script
 test::simple-script() {
   __test::exec simple-script "
@@ -180,7 +173,6 @@ test::all() {
   test::bazel-info
   test::workspace
   test::simple-script
-  test::buildifier
   test::rubocop
   test::rspec
 }
