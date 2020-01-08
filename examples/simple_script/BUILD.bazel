@@ -2,7 +2,7 @@ package(default_visibility = ["//:__subpackages__"])
 
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
-    "ruby_binary",
+    "rb_binary",
     "ruby_library",
     "ruby_rspec",
     "ruby_test",
@@ -35,7 +35,7 @@ ruby_library(
     ],
 )
 
-ruby_binary(
+rb_binary(
     name = "bin",
     srcs = ["script.rb"],
     main = "script.rb",
@@ -47,7 +47,7 @@ ruby_binary(
     ],
 )
 
-ruby_binary(
+rb_binary(
     name = "bin-all",
     srcs = ["script.rb"],
     main = "script.rb",
@@ -133,7 +133,7 @@ ruby_rspec(
     ],
 )
 
-ruby_binary(
+rb_binary(
     name = "rubocop",
     srcs = [
         ".relaxed-rubocop-2.4.yml",

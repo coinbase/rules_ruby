@@ -6,7 +6,7 @@ load(
     "RSPEC_ATTRS",
     "TOOLCHAIN_TYPE_NAME",
 )
-load(":binary.bzl", "ruby_binary_macro")
+load(":binary.bzl", "rb_binary_macro")
 
 def ruby_rspec(
         name,
@@ -58,7 +58,7 @@ def ruby_rspec(
     )
 
 def _ruby_rspec_test_impl(ctx):
-    return ruby_binary_macro(
+    return rb_binary_macro(
         ctx,
         ctx.file.rspec_executable,
         ctx.attr.srcs,

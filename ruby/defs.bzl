@@ -8,7 +8,7 @@ load(
 )
 load(
     "@coinbase_rules_ruby//ruby/private:binary.bzl",
-    _binary = "ruby_binary",
+    _binary = "rb_binary",
     _test = "ruby_test",
 )
 load(
@@ -23,7 +23,7 @@ load(
 
 ruby_toolchain = _toolchain
 ruby_library = _library
-ruby_binary = _binary
+rb_binary = _binary
 ruby_test = _test
 ruby_rspec_test = _ruby_rspec_test
 ruby_rspec = _ruby_rspec

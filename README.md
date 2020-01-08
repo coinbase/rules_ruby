@@ -5,7 +5,7 @@
   * [BUILD.bazel files](#buildbazel-files)
 * [Rules](#rules)
   * [ruby_library](#ruby_library)
-  * [ruby_binary](#ruby_binary)
+  * [rb_binary](#rb_binary)
   * [ruby_test](#ruby_test)
   * [ruby_bundle](#ruby_bundle)
 * [What's coming next](#whats-coming-next)
@@ -88,12 +88,12 @@ ruby_bundle(
 
 ### `BUILD.bazel` files
 
-Add `ruby_library`, `ruby_binary` or `ruby_test` into your `BUILD.bazel` files.
+Add `ruby_library`, `rb_binary` or `ruby_test` into your `BUILD.bazel` files.
 
 ```python
 load(
     "@coinbase_rules_ruby//ruby:defs.bzl",
-    "ruby_binary",
+    "rb_binary",
     "ruby_library",
     "ruby_test",
     "ruby_rspec",
@@ -110,7 +110,7 @@ ruby_library(
     ]
 )
 
-ruby_binary(
+rb_binary(
     name = "bar",
     srcs = ["bin/bar"],
     deps = [":foo"],
@@ -133,7 +133,7 @@ ruby_rspec(
 
 ## Rules
 
-The following diagram attempts to capture the implementation behind `ruby_library` that depends on the result of `bundle install`, and a `ruby_binary` that depends on both:
+The following diagram attempts to capture the implementation behind `ruby_library` that depends on the result of `bundle install`, and a `rb_binary` that depends on both:
 
 ![Ruby Rules](docs/img/rules_ruby.png)
 
@@ -213,10 +213,10 @@ ruby_library(name, deps, srcs, data, compatible_with, deprecation, distribs, fea
   </tbody>
 </table>
 
-### `ruby_binary`
+### `rb_binary`
 
 <pre>
-ruby_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, output_licenses)
+rb_binary(name, deps, srcs, data, main, compatible_with, deprecation, distribs, features, licenses, restricted_to, tags, testonly, toolchains, visibility, args, output_licenses)
 </pre>
 
 <table class="table table-condensed table-bordered table-params">
@@ -420,7 +420,7 @@ ruby_library(
 Or declare many gems in your `Gemfile`, and only use some of them in each ruby library:
 
 ```python
-ruby_binary(
+rb_binary(
     name = "rubocop",
     srcs = [":foo", ".rubocop.yml"],
     args = ["-P", "-D", "-c" ".rubocop.yml"],

@@ -16,7 +16,7 @@ def _to_manifest_path(ctx, file):
 #
 # There could be similar situations in the future where we might want
 # to create a rule (eg, rubocop) that does exactly the same.
-def ruby_binary_macro(ctx, main, srcs):
+def rb_binary_macro(ctx, main, srcs):
     sdk = ctx.toolchains[TOOLCHAIN_TYPE_NAME].ruby_runtime
     interpreter = sdk.interpreter[DefaultInfo].files_to_run.executable
 
@@ -61,22 +61,22 @@ def ruby_binary_macro(ctx, main, srcs):
 
     return [info]
 
-def ruby_binary_impl(ctx):
-    return ruby_binary_macro(
+def rb_binary_impl(ctx):
+    return rb_binary_macro(
         ctx,
         ctx.file.main,
         ctx.attr.srcs,
     )
 
-ruby_binary = rule(
-    implementation = ruby_binary_impl,
+rb_binary = rule(
+    implementation = rb_binary_impl,
     attrs = RUBY_ATTRS,
     executable = True,
     toolchains = [TOOLCHAIN_TYPE_NAME],
 )
 
 ruby_test = rule(
-    implementation = ruby_binary_impl,
+    implementation = rb_binary_impl,
     attrs = RUBY_ATTRS,
     test = True,
     toolchains = [TOOLCHAIN_TYPE_NAME],
