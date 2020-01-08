@@ -9,18 +9,10 @@ jobs:
     environment:
       PATH: "/usr/local/bin:/usr/bin:/sbin:/opt/bin:/home/circleci/repo/bin:/bin:/sbin:/usr/sbin"
       BUNDLE_PATH: /home/circleci/.bundle_cache
-      BAZEL_OPTS: "--max_idle_secs=1 --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m"
-      BAZEL_BUILD_OPTS: "--curses=no --verbose_failures --jobs 10"
-      BAZEL_TEST_OPTS: "--verbose_failures --test_output=streamed --test_verbose_timeout_warnings "
+      BAZEL_OPTS: "--bazelrc=/home/circleci/repo/.circleci/.bazelrc"
 
     steps:
       - checkout
-
-      - run:
-          name: "Install ~/.bazelrc and run setup"
-          command: |
-            cp .circleci/.bazelrc ${HOME}
-            /usr/bin/env bash bin/setup
 
       - run:
           name: Install Bundler
@@ -38,32 +30,38 @@ jobs:
       - checkout
 
       - run:
-          name: "Install ~/.bazelrc and run setup"
+          name: "Install bazelisk"
           command: |
-            cp .circleci/.bazelrc ${HOME}
-            /usr/bin/env bash bin/setup
-
+            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
+            && sudo chmod +x /usr/bin/bazel
+          
       - run:
           name: "Bazel Build & Test Workspace"
           command: |
-            /usr/bin/env bash bin/test-suite workspace
+            bazel ${BAZEL_OPTS} info \
+            && bazel ${BAZEL_OPTS} build //...:all \
+            && bazel ${BAZEL_OPTS} test //...:all \
 
   bazel_build_examples:
     <<: *bazel_defaults
-
     steps:
       - checkout
 
       - run:
-          name: "Install ~/.bazelrc and run setup"
+          name: "Install bazelisk"
           command: |
-            cp .circleci/.bazelrc ${HOME}
-            /usr/bin/env bash bin/setup
-
+            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
+            && sudo chmod +x /usr/bin/bazel
+          
       - run:
           name: "Bazel Build & Test Example"
           command: |
-            /usr/bin/env bash bin/test-suite simple-script
+            cd examples/simple_script \
+            && bazel ${BAZEL_OPTS} info \
+            && bazel ${BAZEL_OPTS} build //...:all \
+            && bazel ${BAZEL_OPTS} test //...:all \
+            && bazel ${BAZEL_OPTS} run :bin \
+            && bazel ${BAZEL_OPTS} run :rubocop \
 
   buildifier:
     <<: *bazel_defaults
@@ -72,43 +70,20 @@ jobs:
       - checkout
 
       - run:
-          name: "Install ~/.bazelrc and run setup"
+          name: "Install bazelisk"
           command: |
-            cp .circleci/.bazelrc ${HOME}
-            /usr/bin/env bash bin/setup
-
+            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
+            && sudo chmod +x /usr/bin/bazel
+          
       - run:
           name: "Bazel Buildifier Build"
           command: |
-            bazel ${BAZEL_OPTS} build ${BAZEL_BUILD_OPTS} :buildifier-check
+            bazel ${BAZEL_OPTS} build :buildifier-check
 
       - run:
           name: "Bazel Buildifier Run"
           command: |
-            bazel ${BAZEL_OPTS} run   ${BAZEL_BUILD_OPTS} :buildifier-check
-
-  # This is here for the travis removal. Will determine usefulness after.
-  travis-test-suite:
-    <<: *bazel_defaults
-
-    steps:
-      - checkout
-
-      - run:
-          name: "Install ~/.bazelrc and run setup"
-          command: |
-            cp .circleci/.bazelrc ${HOME}
-            /usr/bin/env bash bin/setup
-
-      - run:
-          name: "Bazel Build & Test"
-          command: |
-            /usr/bin/env bash bin/test-suite
-      
-      - run:
-          name: "Show env"
-          command: |
-            /usr/bin/env bash bin/show-env
+            bazel ${BAZEL_OPTS} run :buildifier-check
 
 workflows:
   rules_ruby:
@@ -116,4 +91,4 @@ workflows:
       - bazel_build_workspace
       - bazel_build_examples
       - buildifier
-      - travis-test-suite
+      - rubocop

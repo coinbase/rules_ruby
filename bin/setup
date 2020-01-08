@@ -51,7 +51,7 @@ etc.
 
 setup::gems() {
   for gem in rubocop relaxed-rubocop rubocop-performance; do
-    lib::gem::install ${gem}
+    gem install ${gem}
   done
 }
 
@@ -89,7 +89,7 @@ setup::os-specific() {
     eval "setup::${os} \"$*\""
     echo
     if [[ -z ${CI} ]]; then
-      h2 "Please note — to print your Bazel environment run " "${bldylw}bin/show-env"
+      printf "Please note — to print your Bazel environment run " "${bldylw}bin/show-env"
     else
       /usr/bin/env bash bin/show-env || true
     fi
@@ -115,12 +115,12 @@ setup::main() {
       [[ ${code} -ne 0 ]] && error "Error setting up ${action}"
       exit ${code}
     else
-      h1 "Invalid action provided." "Valid actions are: $(__setup::actions " | ")"
+      printf "Invalid action provided." "Valid actions are: $(__setup::actions " | ")"
       exit 1
     fi
   else
     set +e
-    h2 "Installing required development dependencies for working with rules_ruby and Bazel."
+    printf "Installing required development dependencies for working with rules_ruby and Bazel."
     setup::gems
     [[ -z ${CI} ]] && setup::git-hook
     setup::os-specific "$@"

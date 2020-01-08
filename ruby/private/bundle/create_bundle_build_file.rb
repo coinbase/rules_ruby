@@ -250,7 +250,7 @@ if $0 == __FILE__
                                repo_name:      repo_name,
                                excludes:       JSON.parse(excludes),
                                workspace_name: workspace_name)
-                               .generate!
+    .generate!
 
   begin
     Buildifier.new(build_file).buildify!

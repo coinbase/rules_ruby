@@ -5,7 +5,6 @@
 # the repo. Unless a later match takes precedence,
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
-*     @yugui @kigster 
 
 # precedence. When someone opens a pull request that only
 # modifies JS files, only @js-owner and not the global

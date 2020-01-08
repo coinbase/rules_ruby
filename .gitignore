@@ -1,6 +1,15 @@
+# Bazel Ignores
 **/bazel-*
-**/.idea
+.bazelrc.user
+
+# Ruby Ignores
 **/.bundle
 **/vendor/bundle/**
+
+# OS Ignores
 **/.DS_Store
+
+# Editor Ignores
 **/.vscode
+**/.idea
+*.swp
