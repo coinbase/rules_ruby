@@ -1,8 +1,7 @@
 version: 2.1
 
-jobs:
-  rubocop: &bazel_defaults
-    working_directory: /home/circleci/repo
+executors:
+  base-executor:
     resource_class: medium
     docker:
       - image: circleci/ruby:2.6.5
@@ -11,6 +10,20 @@ jobs:
       BUNDLE_PATH: /home/circleci/.bundle_cache
       BAZEL_OPTS: "--bazelrc=/home/circleci/repo/.circleci/.bazelrc"
 
+commands:
+  install-bazelisk:
+    description: "Install Bazelisk"
+    steps:
+      - run:
+          name: "Install bazelisk"
+          command: |
+            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
+            && sudo chmod +x /usr/bin/bazel
+
+jobs:
+  rubocop:
+    working_directory: /home/circleci/repo
+    executor: base-executor
     steps:
       - checkout
 
@@ -25,15 +38,10 @@ jobs:
           command: bundle exec rubocop -E -P
 
   bazel_build_workspace:
-    <<: *bazel_defaults
+    executor: base-executor
     steps:
       - checkout
-
-      - run:
-          name: "Install bazelisk"
-          command: |
-            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
-            && sudo chmod +x /usr/bin/bazel
+      - install-bazelisk
           
       - run:
           name: "Bazel Build & Test Workspace"
@@ -43,16 +51,11 @@ jobs:
             && bazel ${BAZEL_OPTS} test //...:all \
 
   bazel_build_examples:
-    <<: *bazel_defaults
+    executor: base-executor
     steps:
       - checkout
-
-      - run:
-          name: "Install bazelisk"
-          command: |
-            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
-            && sudo chmod +x /usr/bin/bazel
-          
+      - install-bazelisk
+      
       - run:
           name: "Bazel Build & Test Example"
           command: |
@@ -64,16 +67,11 @@ jobs:
             && bazel ${BAZEL_OPTS} run :rubocop \
 
   buildifier:
-    <<: *bazel_defaults
+    executor: base-executor
 
     steps:
       - checkout
-
-      - run:
-          name: "Install bazelisk"
-          command: |
-            sudo curl -L -o /usr/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64 \
-            && sudo chmod +x /usr/bin/bazel
+      - install-bazelisk
           
       - run:
           name: "Bazel Buildifier Build"
