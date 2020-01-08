@@ -1,31 +1,30 @@
 #!/usr/bin/env bash
 
 set -e
-# shellcheck disable=SC1091
-source "bin/deps"
-
 #——————————————————————————————  OS-X SPECIFIC INSTALLERS —————————————————————————
 
 __setup::brew-validate() {
   # Homebrew is required to install Bazel
   if ! brew help >/dev/null; then
     echo "brew is not installed, please install from https://brew.sh"
+    exit 1
   else
-    info: "Homebrew is already installed."
+    echo "Homebrew is already installed."
   fi
 }
 
 __setup::brew-install-jdk() {
   # The JDK homebrew cask is a required to install the java dependencies for Bazel
   if ! brew cask list | grep -q openjdk; then
-    run "brew cask install homebrew/cask-versions/adoptopenjdk8"
+    eval "brew cask install homebrew/cask-versions/adoptopenjdk8"
   else
-    info: "JDK already installed."
+    echo "JDK already installed."
   fi
 }
 
 __setup::brew-deps() {
-  lib::brew::install::packages 'xz' 'ydiff'
+  echo "Attempting to install brew-deps"
+  eval "brew install xz ydiff"
 }
 
 __setup::is-bazelisk-installed() {
@@ -44,15 +43,15 @@ setup::xcode-tools() {
   # xcode command line tools are required, specifically gcc
   # if xcode already exists, this command will error, otherwise prompt the user
   if [[ -n $(xcode-select --install 2>&1) ]]; then
-    info: "xcode-select tools are already installed."
+    echo "xcode-select tools are already installed."
   fi
 }
 
 setup::bazelisk() {
   if __setup::is-bazelisk-installed; then
-    info: "Bazelisk is already installed."
+    echo "Bazelisk is already installed."
   else
-    run "brew install bazelbuild/tap/bazelisk"
+    eval "brew install bazelbuild/tap/bazelisk"
   fi
 }
 
