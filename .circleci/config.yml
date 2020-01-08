@@ -93,5 +93,4 @@ workflows:
       - bazel_build_workspace
       - bazel_build_examples
       - buildifier
-      - travis-test-suite
       - rubocop

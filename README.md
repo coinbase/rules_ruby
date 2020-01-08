@@ -16,7 +16,6 @@
       * [Issues During Setup](#issues-during-setup)
   * [Developing Rules](#developing-rules)
   * [Running Tests](#running-tests)
-    * [Test Script](#test-script)
   * [Linter](#linter)
 * [Copyright](#copyright)
 
@@ -538,7 +537,7 @@ Those will install Bazel and everything else you need on either platform. In fac
 
 ##### Issues During Setup
 
-**Please report any errors to `bin/setup` as Issues on Github. You can assign them to @kigster.**
+**Please report any errors to `bin/setup` as Issues on Github.**
 
 ### Developing Rules
 
@@ -546,13 +545,7 @@ Besides making yourself familiar with the existing code, and [Bazel documentatio
 
   1. Setup dev tools as described in the [setup](#Setup) section.
   3. hack, hack, hack...
-  4. Make sure all tests pass — you can run a single command for that (but see more on it [below](#test-script).
-
-    ```bash
-    bin/test-suite
-    ```
-
-OR you can run individual Bazel test commands from the inside.
+  4. Make sure all tests pass — you can run individual Bazel test commands from the inside.
 
    * `bazel test //...`
    * `cd examples/simple_script && bazel test //...`
@@ -571,24 +564,7 @@ bazel query //...:all
 bazel test //...:all
 ```
 
-But to run tests inside each sub-WORKSPACE, you will need to repeat that in each sub-folder. Luckily, there is a better way.
-
-#### Test Script
-
-This script runs all tests (including sub-workspaces) when ran without arguments:
-
-```bash
-bin/test-suite
-```
-
-Run it with `help` command to see other options, and to see what parts you can run individually. At the moment they are:
-
-```bash
-# alternatively, a partial test name can be passed:
-bin/test-suite [ all | bazel-info | buildifier | help | rspec | rubocop | simple-script |  workspace ]
-```
-
-On a MacBook Pro it takes about 3 minutes to run.
+But to run tests inside each sub-WORKSPACE, you will need to repeat that in each sub-folder.
 
 ### Linter
 
