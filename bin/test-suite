@@ -9,7 +9,7 @@ export SHELL_INIT="${HOME}/.bashrc"
 export BUNDLE_PATH="${BUNDLE_PATH:-${HOME}/.bundle/gems}"
 export PATH="${HOME}/.rbenv/bin:${HOME}/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/sbin:/usr/sbin:/opt/local/bin"
 
-export BAZEL_OPTS="--host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m"
+export BAZEL_OPTS="--host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m --bazelrc=.circleci/.bazelrc"
 export BAZEL_BUILD_OPTS="--curses=no --verbose_failures -j 15 --show_progress_rate_limit 0 "
 export BAZEL_TEST_OPTS="--verbose_failures --test_output=streamed --test_verbose_timeout_warnings "
 export RUBY_VERSION=$(cat .ruby-version)
@@ -25,8 +25,6 @@ export Bazel__BuildSteps="
     bazel ${BAZEL_OPTS} test ${BAZEL_BUILD_OPTS} ${BAZEL_TEST_OPTS} -- //... ; echo; echo
 "
 deps::start-clock
-
-run::set-all abort-on-error
 
 #—————————————————————————————————————————————————————————————————————————————————————————————————————————————
 # Private Functions

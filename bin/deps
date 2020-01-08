@@ -37,13 +37,13 @@ help-example() {
 }
 
 deps::start-clock() {
-  export __start=$(millis)
+  export __start=$(date +%s)
 }
 
 deps::print-duration() {
-  local finish=$(millis)
+  local finish=$(date +%s)
   local duration=$(( finish - __start ))
-  info "Total running time for was ${bldylw}$(lib::time::duration::millis-to-secs ${duration}) seconds.\n\n"
+  info "Total running time for was ${bldylw}${duration} seconds.\n\n"
 }
 
 # ensure we can exit with Ctrl-C
