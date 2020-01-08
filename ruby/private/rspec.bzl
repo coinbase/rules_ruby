@@ -8,7 +8,7 @@ load(
 )
 load(":binary.bzl", "rb_binary_macro")
 
-def ruby_rspec(
+def rb_rspec(
         name,
         srcs,
         specs,
@@ -47,7 +47,7 @@ def ruby_rspec(
 
     deps += rspec_gems
 
-    ruby_rspec_test(
+    rb_rspec_test(
         name = name,
         visibility = visibility,
         args = args_list,
@@ -57,15 +57,15 @@ def ruby_rspec(
         **kwargs
     )
 
-def _ruby_rspec_test_impl(ctx):
+def _rb_rspec_test_impl(ctx):
     return rb_binary_macro(
         ctx,
         ctx.file.rspec_executable,
         ctx.attr.srcs,
     )
 
-ruby_rspec_test = rule(
-    implementation = _ruby_rspec_test_impl,
+rb_rspec_test = rule(
+    implementation = _rb_rspec_test_impl,
     attrs = RSPEC_ATTRS,
     test = True,
     toolchains = [TOOLCHAIN_TYPE_NAME],

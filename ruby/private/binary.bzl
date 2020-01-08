@@ -11,7 +11,7 @@ def _to_manifest_path(ctx, file):
         return ("%s/%s" % (ctx.workspace_name, file.short_path))
 
 # Having this function allows us to override otherwise frozen attributes
-# such as main, srcs and deps. We use this in ruby_rspec_test rule by
+# such as main, srcs and deps. We use this in rb_rspec_test rule by
 # adding rspec as a main, and sources, and rspec gem as a dependency.
 #
 # There could be similar situations in the future where we might want

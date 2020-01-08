@@ -96,7 +96,7 @@ load(
     "rb_binary",
     "rb_library",
     "rb_test",
-    "ruby_rspec",
+    "rb_rspec",
 )
 
 rb_library(
@@ -122,7 +122,7 @@ rb_test(
     deps = [":foo"],
 )
 
-ruby_rspec(
+rb_rspec(
     name = "foo-spec",
     specs = glob(["spec/**/*.rb"]),
     rspec_args = { "--format": "progress" },
