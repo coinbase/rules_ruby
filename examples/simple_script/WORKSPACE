@@ -17,9 +17,9 @@ rules_ruby_dependencies()
 
 ruby_register_toolchains(version = "2.6.5")
 
-load("@coinbase_rules_ruby//ruby:defs.bzl", "ruby_bundle")
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
-ruby_bundle(
+rb_bundle(
     name = "bundle",
     excludes = {
         "mini_portile": ["test/**/*"],

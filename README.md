@@ -7,7 +7,7 @@
   * [rb_library](#rb_library)
   * [rb_binary](#rb_binary)
   * [rb_test](#rb_test)
-  * [ruby_bundle](#ruby_bundle)
+  * [rb_bundle](#rb_bundle)
 * [What's coming next](#whats-coming-next)
 * [Contributing](#contributing)
   * [Setup](#setup)
@@ -61,7 +61,7 @@ rules_ruby_dependencies()
 ruby_register_toolchains()
 ```
 
-Next, add any external Gem dependencies you may have via `ruby_bundle` command.
+Next, add any external Gem dependencies you may have via `rb_bundle` command.
 The name of the bundle becomes a reference to this particular Gemfile.lock.
 
 Install external gems that can be later referenced as `@<bundle-name>//:<gem-name>`,
@@ -71,14 +71,14 @@ for instance, `@bundle//:bin/rubocop`.
 You can install more than one bundle per WORKSPACE, but that's not recommended.
 
 ```python
-ruby_bundle(
+rb_bundle(
   name = "bundle",
   gemfile = ":Gemfile",
   gemfile_lock = ":Gemfile.lock",
   bundler_version = "2.1.2",
 )
 
-ruby_bundle(
+rb_bundle(
   name = "bundle_app_shopping",
   gemfile = "//apps/shopping:Gemfile",
   gemfile_lock = "//apps/shopping:Gemfile.lock",
@@ -375,7 +375,7 @@ rb_test(name, deps, srcs, data, main, compatible_with, deprecation, distribs, fe
   </tbody>
 </table>
 
-### `ruby_bundle`
+### `rb_bundle`
 
 Installs gems with Bundler, and make them available as a `rb_library`.
 
@@ -398,9 +398,9 @@ rules_ruby_dependencies()
 
 ruby_register_toolchains()
 
-load("@coinbase_rules_ruby//ruby:defs.bzl", "ruby_bundle")
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
-ruby_bundle(
+rb_bundle(
     name = "gems",
     gemfile = "//:Gemfile",
     gemfile_lock = "//:Gemfile.lock",
@@ -430,7 +430,7 @@ rb_binary(
 ```
 
 <pre>
-ruby_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
+rb_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
 </pre>
 <table class="table table-condensed table-bordered table-params">
   <colgroup>

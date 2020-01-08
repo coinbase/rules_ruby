@@ -13,7 +13,7 @@ load(
 )
 load(
     "@coinbase_rules_ruby//ruby/private:bundle.bzl",
-    _ruby_bundle = "ruby_bundle",
+    _rb_bundle = "rb_bundle",
 )
 load(
     "@coinbase_rules_ruby//ruby/private:rspec.bzl",
@@ -27,5 +27,5 @@ rb_binary = _binary
 rb_test = _test
 ruby_rspec_test = _ruby_rspec_test
 ruby_rspec = _ruby_rspec
-bundle_install = _ruby_bundle
-ruby_bundle = _ruby_bundle
+bundle_install = _rb_bundle
+rb_bundle = _rb_bundle
