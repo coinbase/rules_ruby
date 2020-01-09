@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'colored2'
 require 'openssl'
 require 'awesome_print'
 
-require_relative 'lib/foo'
+require 'lib/foo'
 
 def oss_rand
   OpenSSL::BN.rand(512).to_s

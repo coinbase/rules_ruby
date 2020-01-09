@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require_relative '../../lib/foo'
+require 'spec_helper'
+require 'lib/foo'
 
 RSpec.describe Foo do
   let(:goo) { 'Green slime was dripping down his throat into his lapdomen...' }

@@ -1,15 +1,13 @@
-load(
-    "//ruby/private:constants.bzl",
-    "BUNDLE_ATTRS",
-    "BUNDLE_BINARY",
-    "BUNDLE_BIN_PATH",
-    "BUNDLE_PATH",
-    "RULES_RUBY_WORKSPACE_NAME",
-    "SCRIPT_BUILD_FILE_GENERATOR",
-    "SCRIPT_INSTALL_GEM",
-)
+load("//ruby/private:constants.bzl", "RULES_RUBY_WORKSPACE_NAME")
 load("//ruby/private:providers.bzl", "RubyRuntimeContext")
-load("//ruby/private/tools:deprecations.bzl", "deprecated_attribute")
+
+DEFAULT_BUNDLER_VERSION = "2.1.2"
+BUNDLE_BIN_PATH = "bin"
+BUNDLE_PATH = "lib"
+BUNDLE_BINARY = "bundler/exe/bundler"
+
+SCRIPT_INSTALL_GEM = "download_gem.rb"
+SCRIPT_BUILD_FILE_GENERATOR = "create_bundle_build_file.rb"
 
 # Runs bundler with arbitrary arguments
 # eg: run_bundler(runtime_ctx, [ "lock", " --gemfile", "Gemfile.rails5" ])
@@ -145,12 +143,7 @@ def _rb_bundle_impl(ctx):
     ctx.symlink(ctx.attr._create_bundle_build_file, SCRIPT_BUILD_FILE_GENERATOR)
     ctx.symlink(ctx.attr._install_bundler, SCRIPT_INSTALL_GEM)
 
-    # version is too generic for this operation
-    deprecated_attribute(ctx, "version", "bundler_version")
-    if ctx.attr.bundler_version:
-        bundler_version = ctx.attr.bundler_version
-    else:
-        bundler_version = ctx.attr.version
+    bundler_version = ctx.attr.bundler_version
 
     # Setup this provider that we pass around between functions for convenience
     runtime_ctx = RubyRuntimeContext(
@@ -176,5 +169,46 @@ def _rb_bundle_impl(ctx):
 
 rb_bundle = repository_rule(
     implementation = _rb_bundle_impl,
-    attrs = BUNDLE_ATTRS,
+    attrs = {
+        "ruby_sdk": attr.string(
+            default = "@org_ruby_lang_ruby_toolchain",
+        ),
+        "ruby_interpreter": attr.label(
+            default = "@org_ruby_lang_ruby_toolchain//:ruby",
+        ),
+        "gemfile": attr.label(
+            allow_single_file = True,
+            mandatory = True,
+        ),
+        "gemfile_lock": attr.label(
+            allow_single_file = True,
+        ),
+        "version": attr.string(
+            mandatory = False,
+        ),
+        "bundler_version": attr.string(
+            default = DEFAULT_BUNDLER_VERSION,
+        ),
+        "gemspec": attr.label(
+            allow_single_file = True,
+        ),
+        "excludes": attr.string_list_dict(
+            doc = "List of glob patterns per gem to be excluded from the library",
+        ),
+        "_install_bundler": attr.label(
+            default = "%s//ruby/private/bundle:%s" % (
+                RULES_RUBY_WORKSPACE_NAME,
+                SCRIPT_INSTALL_GEM,
+            ),
+            allow_single_file = True,
+        ),
+        "_create_bundle_build_file": attr.label(
+            default = "%s//ruby/private/bundle:%s" % (
+                RULES_RUBY_WORKSPACE_NAME,
+                SCRIPT_BUILD_FILE_GENERATOR,
+            ),
+            doc = "Creates the BUILD file",
+            allow_single_file = True,
+        ),
+    },
 )
