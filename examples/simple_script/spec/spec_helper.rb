@@ -16,7 +16,6 @@ ENV['HOME'] ||= '/'
 require 'rspec'
 require 'rspec/its'
 require 'awesome_print'
-require 'colored2'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
