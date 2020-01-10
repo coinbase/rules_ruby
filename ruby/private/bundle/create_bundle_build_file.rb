@@ -65,29 +65,6 @@ require 'stringio'
 require 'fileutils'
 require 'tempfile'
 
-# colorization
-class String
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
-
-  # @formatter:off
-  def red;          colorize(31); end
-
-  def green;        colorize(32); end
-
-  def yellow;       colorize(33); end
-
-  def blue;         colorize(34); end
-
-  def pink;         colorize(35); end
-
-  def light_blue;   colorize(36); end
-
-  def orange;       colorize(41); end
-  # @formatter:on
-end
-
 class BundleBuildFileGenerator
   attr_reader :workspace_name,
               :repo_name,
@@ -193,7 +170,7 @@ end
 # ruby ./create_bundle_build_file.rb "BUILD.bazel" "Gemfile.lock" "repo_name" "[]" "wsp_name"
 if $0 == __FILE__
   if ARGV.length != 5
-    warn("USAGE: #{$0} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name".orange)
+    warn("USAGE: #{$0} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name")
     exit(1)
   end
 

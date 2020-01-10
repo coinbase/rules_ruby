@@ -12,8 +12,8 @@ bundle lock --update
 ```
 
 ### Rubocop
-Run rubocop with:
+Run rubocop autocorrect with:
 
 ```
-bazel run //:rubocop -- $(pwd)/*/*.rb -a
+bazel run //:rubocop -- -a
 ```
