@@ -26,9 +26,7 @@ def main(args)
   stdout = IO.popen(args, &:read)
 
   IO.popen(['diff', '-B', '-c', golden, '-'], 'w') { |io| io << stdout }
-  exit $?.exitstatus
+  exit $CHILD_STATUS.exitstatus
 end
 
-if $0 == __FILE__
-  main(ARGV)
-end
+main(ARGV) if $PROGRAM_NAME == __FILE__

@@ -23,12 +23,10 @@ def main
   gem_name, gem_version, dir, = *ARGV
   dir ||= Dir.pwd
   unless gem_name && gem_version
-    puts "USAGE: #{$0} gem-name gem-version destination-folder"
+    puts "USAGE: #{$PROGRAM_NAME} gem-name gem-version destination-folder"
     exit 1
   end
   unpack_gem(gem_name, gem_version, dir)
 end
 
-if $0 == __FILE__
-  main
-end
+main if $PROGRAM_NAME == __FILE__

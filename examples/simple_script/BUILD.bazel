@@ -6,6 +6,7 @@ load(
     "rb_library",
     "rb_rspec",
     "rb_test",
+    "rubocop",
 )
 
 # A ruby script that is depending on a Gem and another folders rb_library
@@ -41,11 +42,11 @@ rb_test(
     ],
 )
 
-# Rubocop which can
-rb_binary(
+# Rubocop rule
+# To check
+# bazel run rubocop -- -a
+rubocop(
     name = "rubocop",
-    main = "@bundle//:bin/rubocop",
-    deps = [
-        "@bundle//:rubocop",
-    ],
+    bin = "@bundle//:bin/rubocop",
+    deps = ["@bundle//:rubocop"],
 )

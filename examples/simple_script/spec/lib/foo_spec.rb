@@ -14,7 +14,9 @@ RSpec.describe Foo do
     its(:transform) { should_not eq goo }
 
     # Some rot13 old school encryption :)
-    its(:transform) { should eq 'Gerra fyvzr jnf qevccvat qbja uvf guebng vagb uvf yncqbzra...' }
+    its(:transform) do
+      should eq 'Gerra fyvzr jnf qevccvat qbja uvf guebng vagb uvf yncqbzra...'
+    end
   end
 
   context 'aha' do

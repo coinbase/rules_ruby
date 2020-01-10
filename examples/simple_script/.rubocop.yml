@@ -5,19 +5,4 @@ AllCops:
   DisplayStyleGuide: true
   DisplayCopNames: true
   Exclude:
-    - "external*/**/*"
     - "bazel-*/**/*"
-    - "**/examples/**/*"
-    - "**/BUILD"
-    - "**/*.bazel"
-    - "**/*.bzl"
-    - "**/rubocop"
-    - "**/vendor/bundle/**/*"
-  Include:
-    - '**/*.rb'
-    - '**/*.gemfile'
-    - '**/*.gemspec'
-    - '**/*.rake'
-    - '**/*.ru'
-    - '**/Gemfile'
-    - '**/Rakefile'
