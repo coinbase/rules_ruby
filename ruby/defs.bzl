@@ -20,7 +20,6 @@ load(
     _rb_rspec = "rb_rspec",
     _rb_rspec_test = "rb_rspec_test",
 )
-
 load(
     "@coinbase_rules_ruby//ruby/private/rubocop:def.bzl",
     _rubocop = "rubocop",

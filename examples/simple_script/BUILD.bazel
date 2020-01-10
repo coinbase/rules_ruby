@@ -50,4 +50,3 @@ rubocop(
     bin = "@bundle//:bin/rubocop",
     deps = ["@bundle//:rubocop"],
 )
-

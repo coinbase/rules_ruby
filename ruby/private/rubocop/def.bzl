@@ -1,4 +1,4 @@
-load( "@coinbase_rules_ruby//ruby/private:binary.bzl", "rb_binary")
+load("@coinbase_rules_ruby//ruby/private:binary.bzl", "rb_binary")
 
 # This wraps an rb_binary in a script that is executed from the workspace folder
 def rubocop(name, bin, deps):
@@ -16,5 +16,5 @@ def rubocop(name, bin, deps):
         srcs = [runner],
         executable = True,
         outs = [name + ".sh"],
-        cmd = "sed \"s~{{BIN}}~$(location %s)~g\" $(location %s) > \"$@\"" % (bin_name, runner)
+        cmd = "sed \"s~{{BIN}}~$(location %s)~g\" $(location %s) > \"$@\"" % (bin_name, runner),
     )
