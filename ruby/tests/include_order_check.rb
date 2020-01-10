@@ -20,16 +20,14 @@ DEPS = [
   %w[a d],
   %w[b d],
   %w[c e],
-  %w[d e],
+  %w[d e]
 ].freeze
 
-actual = $LOAD_PATH.grep(%r[/somewhere/.$]).map { |path|
+actual = $LOAD_PATH.grep(%r{/somewhere/.$}).map do |path|
   path.chars.last
-}
-
-unless actual.sort == %w[a b c d e f]
-  raise "Expect $LOAD_PATH includes somewhere/{a,b,c,d,e} but it did not"
 end
+
+raise 'Expect $LOAD_PATH includes somewhere/{a,b,c,d,e} but it did not' unless actual.sort == %w[a b c d e f]
 
 DEPS.each do |earlier, later|
   i = actual.index(earlier)

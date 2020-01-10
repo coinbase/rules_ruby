@@ -5,6 +5,4 @@
 
 expected = %w[foo bar baz]
 
-unless ARGV == expected
-  raise "Expected ARGV to be #{expected}; got #{ARGV}"
-end
+raise "Expected ARGV to be #{expected}; got #{ARGV}" unless ARGV == expected

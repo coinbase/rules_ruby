@@ -6,3 +6,18 @@ AllCops:
   DisplayCopNames: true
   Exclude:
     - "bazel-*/**/*"
+
+Layout/LineLength:
+  Enabled: true
+  Max: 200
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 20
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 40

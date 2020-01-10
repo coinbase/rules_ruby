@@ -55,7 +55,7 @@ ALL_GEMS = <<~ALL_GEMS
   )
 ALL_GEMS
 
-GEM_LIB_PATH = ->(ruby_version, gem_name, gem_version) do
+GEM_LIB_PATH = lambda do |ruby_version, gem_name, gem_version|
   "lib/ruby/#{ruby_version}/gems/#{gem_name}-#{gem_version}/lib"
 end
 
@@ -104,11 +104,11 @@ class BundleBuildFileGenerator
     # rubocop:enable Style/ExpandPathArguments
 
     template_out.puts TEMPLATE
-                        .gsub('{workspace_name}', workspace_name)
-                        .gsub('{repo_name}', repo_name)
-                        .gsub('{ruby_version}', ruby_version)
-                        .gsub('{binaries}', binaries.to_s)
-                        .gsub('{bundler_setup}', bundler_setup_require)
+      .gsub('{workspace_name}', workspace_name)
+      .gsub('{repo_name}', repo_name)
+      .gsub('{ruby_version}', ruby_version)
+      .gsub('{binaries}', binaries.to_s)
+      .gsub('{bundler_setup}', bundler_setup_require)
 
     # strip bundler version so we can process this file
     remove_bundler_version!
@@ -118,9 +118,9 @@ class BundleBuildFileGenerator
     bundle.specs.each { |spec| register_gem(spec, template_out, gem_lib_paths) }
 
     template_out.puts ALL_GEMS
-                        .gsub('{gems_lib_files}', gem_lib_paths.map { |p| "#{p}/**/*.rb" }.to_s)
-                        .gsub('{gems_lib_paths}', gem_lib_paths.to_s)
-                        .gsub('{bundler_setup}', bundler_setup_require)
+      .gsub('{gems_lib_files}', gem_lib_paths.map { |p| "#{p}/**/*.rb" }.to_s)
+      .gsub('{gems_lib_paths}', gem_lib_paths.to_s)
+      .gsub('{bundler_setup}', bundler_setup_require)
 
     ::File.open(build_file, 'w') { |f| f.puts template_out.string }
   end
@@ -143,7 +143,9 @@ class BundleBuildFileGenerator
 
     temp_gemfile_lock = "#{gemfile_lock}.no-bundle-version"
     system %(sed -n '/BUNDLED WITH/q;p' "#{gemfile_lock}" > #{temp_gemfile_lock})
-    ::FileUtils.rm_f(gemfile_lock) if File.symlink?(gemfile_lock) # it's just a symlink
+    if File.symlink?(gemfile_lock)
+      ::FileUtils.rm_f(gemfile_lock) # it's just a symlink
+    end
     ::FileUtils.move(temp_gemfile_lock, gemfile_lock, force: true)
   end
 
@@ -157,30 +159,30 @@ class BundleBuildFileGenerator
     exclude_array += ['**/* *.*', '**/* */*']
 
     template_out.puts GEM_TEMPLATE
-                        .gsub('{exclude}', exclude_array.to_s)
-                        .gsub('{name}', spec.name)
-                        .gsub('{version}', spec.version.to_s)
-                        .gsub('{deps}', deps.to_s)
-                        .gsub('{repo_name}', repo_name)
-                        .gsub('{ruby_version}', ruby_version)
-                        .gsub('{bundler_setup}', bundler_setup_require)
+      .gsub('{exclude}', exclude_array.to_s)
+      .gsub('{name}', spec.name)
+      .gsub('{version}', spec.version.to_s)
+      .gsub('{deps}', deps.to_s)
+      .gsub('{repo_name}', repo_name)
+      .gsub('{ruby_version}', ruby_version)
+      .gsub('{bundler_setup}', bundler_setup_require)
   end
 end
 
 # ruby ./create_bundle_build_file.rb "BUILD.bazel" "Gemfile.lock" "repo_name" "[]" "wsp_name"
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   if ARGV.length != 5
-    warn("USAGE: #{$0} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name")
+    warn("USAGE: #{$PROGRAM_NAME} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name")
     exit(1)
   end
 
   build_file, gemfile_lock, repo_name, excludes, workspace_name, * = *ARGV
 
-  BundleBuildFileGenerator.new(build_file:     build_file,
-                               gemfile_lock:   gemfile_lock,
-                               repo_name:      repo_name,
-                               excludes:       JSON.parse(excludes),
+  BundleBuildFileGenerator.new(build_file: build_file,
+                               gemfile_lock: gemfile_lock,
+                               repo_name: repo_name,
+                               excludes: JSON.parse(excludes),
                                workspace_name: workspace_name)
-    .generate!
+                          .generate!
 
 end
