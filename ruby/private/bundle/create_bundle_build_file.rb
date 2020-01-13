@@ -33,7 +33,7 @@ GEM_TEMPLATE = <<~GEM_TEMPLATE
     name = "{name}",
     srcs = glob(
       include = [
-        "lib/ruby/{ruby_version}/gems/{name}-{version}/**/*",
+        "lib/ruby/{ruby_version}/gems/{name}-{version}/**",
         "lib/ruby/{ruby_version}/specifications/{name}-{version}.gemspec",
         "bin/*"
       ],
