@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Foo is an example of a rb_library
 class Foo
   class << self
     def yell_aha
@@ -13,7 +14,10 @@ class Foo
     def rot13(value)
       return nil unless value.is_a?(String)
 
-      value.tr('abcdefghijklmnopqrstuvwxyz', 'nopqrstuvwxyzabcdefghijklm')
+      value.tr(
+        'abcdefghijklmnopqrstuvwxyz',
+        'nopqrstuvwxyzabcdefghijklm'
+      )
     end
   end
 
