@@ -33,14 +33,14 @@ GEM_TEMPLATE = <<~GEM_TEMPLATE
     name = "{name}",
     srcs = glob(
       include = [
-        "lib/ruby/{ruby_version}/gems/{name}-{version}/**",
-        "lib/ruby/{ruby_version}/specifications/{name}-{version}.gemspec",
+        "lib/ruby/{ruby_version}/gems/{name}-{version}*/**",
+        "lib/ruby/{ruby_version}/specifications/{name}-{version}*.gemspec",
         "bin/*"
       ],
       exclude = {exclude},
     ),
     deps = {deps},
-    includes = ["lib/ruby/{ruby_version}/gems/{name}-{version}/lib"],
+    includes = ["lib/ruby/{ruby_version}/gems/{name}-{version}*/lib"],
     rubyopt = ["{bundler_setup}"],
   )
 GEM_TEMPLATE
@@ -57,7 +57,7 @@ ALL_GEMS = <<~ALL_GEMS
 ALL_GEMS
 
 GEM_LIB_PATH = lambda do |ruby_version, gem_name, gem_version|
-  "lib/ruby/#{ruby_version}/gems/#{gem_name}-#{gem_version}/lib"
+  "lib/ruby/#{ruby_version}/gems/#{gem_name}-#{gem_version}*/lib"
 end
 
 require 'bundler'
