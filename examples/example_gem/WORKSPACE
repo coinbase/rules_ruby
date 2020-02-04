@@ -1,0 +1,22 @@
+workspace(name = "coinbase_rules_ruby_example_gem")
+
+# Importing rules_ruby from the parent directory for developing
+# rules_ruby itself...
+local_repository(
+    name = "coinbase_rules_ruby",
+    path = "../..",
+)
+
+load(
+    "@coinbase_rules_ruby//ruby:deps.bzl",
+    "ruby_register_toolchains",
+    "rules_ruby_dependencies",
+)
+
+rules_ruby_dependencies()
+
+ruby_register_toolchains()
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
