@@ -88,12 +88,7 @@ def rb_binary_impl(ctx):
 
 rb_binary = rule(
     implementation = rb_binary_impl,
-    attrs = dict(
-        RUBY_ATTRS,
-        force_gem_pristine = attr.string_list(
-            doc = "Jank hack. Run gem pristine on some gems that don't handle symlinks well",
-        )
-    ),
+    attrs = RUBY_ATTRS,
     executable = True,
     toolchains = [TOOLCHAIN_TYPE_NAME],
 )
