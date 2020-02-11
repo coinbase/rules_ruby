@@ -54,6 +54,8 @@ def rb_binary_macro(ctx, main, srcs):
 
     gem_path = _get_gem_path(deps.incpaths.to_list())
 
+    gems_to_pristine = ctx.attr.force_gem_pristine
+
     rubyopt = reversed(deps.rubyopt.to_list())
 
     ctx.actions.expand_template(
@@ -65,6 +67,8 @@ def rb_binary_macro(ctx, main, srcs):
             "{main}": repr(_to_manifest_path(ctx, main)),
             "{interpreter}": _to_manifest_path(ctx, interpreter),
             "{gem_path}": gem_path,
+            "{should_gem_pristine}": str(len(gems_to_pristine) > 0).lower(),
+            "{gems_to_pristine}": " ".join(gems_to_pristine),
         },
     )
 
@@ -84,7 +88,12 @@ def rb_binary_impl(ctx):
 
 rb_binary = rule(
     implementation = rb_binary_impl,
-    attrs = RUBY_ATTRS,
+    attrs = dict(
+        RUBY_ATTRS,
+        force_gem_pristine = attr.string_list(
+            doc = "Jank hack. Run gem pristine on some gems that don't handle symlinks well",
+        )
+    ),
     executable = True,
     toolchains = [TOOLCHAIN_TYPE_NAME],
 )
