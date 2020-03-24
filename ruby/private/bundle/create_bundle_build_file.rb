@@ -28,6 +28,8 @@ TEMPLATE = <<~MAIN_TEMPLATE
   # PULL EACH GEM INDIVIDUALLY
 MAIN_TEMPLATE
 
+# The build_complete file is only silence the 'extensions' are not built warnings. They are built.
+# TODO: Replace the extensions ** with the platform (eg. x86_64-darwin-19)
 GEM_TEMPLATE = <<~GEM_TEMPLATE
   rb_library(
     name = "{name}",
@@ -36,6 +38,7 @@ GEM_TEMPLATE = <<~GEM_TEMPLATE
         "lib/ruby/{ruby_version}/gems/{name}-{version}*/**",
         "lib/ruby/{ruby_version}/specifications/{name}-{version}*.gemspec",
         "lib/ruby/{ruby_version}/cache/{name}-{version}*.gem",
+        "lib/ruby/{ruby_version}/extensions/**/{ruby_version}/{name}-{version}/gem.build_complete",
         "bin/*"
       ],
       exclude = {exclude},

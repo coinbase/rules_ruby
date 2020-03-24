@@ -25,6 +25,9 @@ RUBY_ATTRS = {
     "force_gem_pristine": attr.string_list(
         doc = "Jank hack. Run gem pristine on some gems that don't handle symlinks well",
     ),
+    "run_under": attr.string(
+        doc = "Execute a directory change before running the binary.",
+    ),
     "_wrapper_template": attr.label(
         allow_single_file = True,
         default = "binary_wrapper.tpl",

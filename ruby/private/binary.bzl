@@ -69,6 +69,7 @@ def rb_binary_macro(ctx, main, srcs):
             "{gem_path}": gem_path,
             "{should_gem_pristine}": str(len(gems_to_pristine) > 0).lower(),
             "{gems_to_pristine}": " ".join(gems_to_pristine),
+            "{run_under}": ctx.attr.run_under,
         },
     )
 
