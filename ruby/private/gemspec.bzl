@@ -41,10 +41,10 @@ def _rb_gem_impl(ctx):
         template = ctx.file._gemspec_template,
         output = gemspec,
         substitutions = {
-            "{name}": "\"%s\"" % ctx.label.name,
+            "{name}": "\"%s\"" % ctx.attr.gem_name,
             "{srcs}": repr(_ruby_files),
             "{authors}": repr(ctx.attr.authors),
-            "{version}": ctx.attr.version,
+            "{version}": "\"{}\"".format(ctx.attr.version),
             "{require_paths}": repr(_require_paths),
         },
     )
