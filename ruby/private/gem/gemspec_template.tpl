@@ -5,6 +5,4 @@ Gem::Specification.new do |s|
   s.version       = {version}
   s.files         = {srcs}
   s.require_paths = {require_paths}
-
-  s.add_dependency('csf')
 end
