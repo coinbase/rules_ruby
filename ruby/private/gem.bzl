@@ -1,5 +1,5 @@
 load(
-    ":gemspec.bzl",
+    "//ruby/private/gem:gemspec.bzl",
     _rb_gemspec = "rb_gemspec",
 )
 load(

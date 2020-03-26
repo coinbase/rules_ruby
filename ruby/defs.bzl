@@ -25,7 +25,7 @@ load(
     _rubocop = "rubocop",
 )
 load(
-    "@coinbase_rules_ruby//ruby/private:gemspec.bzl",
+    "@coinbase_rules_ruby//ruby/private/gem:gemspec.bzl",
     _gemspec = "rb_gemspec",
 )
 load(
