@@ -20,5 +20,6 @@ RubyGem = provider(
     fields = [
         "ctx",
         "version",
+        "gemspec",
     ],
 )

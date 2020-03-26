@@ -3,12 +3,11 @@ load(
     _rb_gemspec = "rb_gemspec",
 )
 load(
-    "@rules_pkg//:pkg.bzl",
-    "pkg_zip",
+    "//ruby/private/gem:gem.bzl",
+    _rb_build_gem = "rb_build_gem",
 )
 
 def rb_gem(name, version, gem_name, srcs = [], **kwargs):
-    _zip_name = "%s-%s" % (gem_name, version)
     _gemspec_name = name + "_gemspec"
 
     _rb_gemspec(
@@ -18,14 +17,11 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
         **kwargs
     )
 
-    pkg_zip(
-        name = _zip_name,
-        srcs = srcs + [":" + _gemspec_name],
-        strip_prefix = "./",
-    )
-
-    native.alias(
+    _rb_build_gem(
         name = name,
-        actual = ":" + _zip_name,
+        gem_name = gem_name,
+        gemspec = _gemspec_name,
+        version = version,
+        deps = srcs + [_gemspec_name],
         visibility = ["//visibility:public"],
     )
