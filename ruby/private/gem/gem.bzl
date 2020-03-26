@@ -15,8 +15,6 @@ def _rb_build_gem_impl(ctx):
     for dep in ctx.attr.deps:
         _inputs.extend(dep.files.to_list())
 
-    # _filename = "%{ctx.attr.gem_name}-%{ctx.attr.version}.gem"
-    # _file = ctx.actions.declare_file(_filename)
     ctx.actions.run(
         inputs = _inputs,
         executable = ctx.attr.ruby_interpreter.files_to_run.executable,

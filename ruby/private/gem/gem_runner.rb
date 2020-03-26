@@ -41,7 +41,6 @@ begin
   end
 
   Gem::GemRunner.new.run args
-  # Dir.glob('./**/*').each { |f| warn f }
 rescue Gem::SystemExitException => e
   exit e.exit_code
 end
