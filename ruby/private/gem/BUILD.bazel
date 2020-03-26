@@ -2,6 +2,7 @@ package(default_visibility = ["//ruby/private:__pkg__"])
 
 exports_files(
     [
+        "gemspec_template.tpl",
         "gem_runner.rb",
     ],
     visibility = ["//visibility:public"],
