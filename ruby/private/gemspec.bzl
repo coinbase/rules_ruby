@@ -9,9 +9,6 @@ load(
 )
 
 def _get_transitive_srcs(srcs, deps):
-    for dep in deps:
-        print(dep[RubyLibrary].transitive_ruby_srcs)
-
     return depset(
         srcs,
         transitive = [dep[RubyLibrary].transitive_ruby_srcs for dep in deps],
@@ -54,6 +51,7 @@ def _rb_gem_impl(ctx):
         RubyGem(
             ctx = ctx,
             version = ctx.attr.version,
+            gemspec = gemspec,
         ),
     ]
 
@@ -76,6 +74,9 @@ _ATTRS = {
     "srcs": attr.label_list(
         allow_files = True,
         default = [],
+    ),
+    "gem_deps": attr.label_list(
+        allow_files = True,
     ),
     "require_paths": attr.string_list(),
 }
