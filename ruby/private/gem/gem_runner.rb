@@ -46,14 +46,14 @@ begin
   if Gem.rubygems_version < Gem::Version.new('3.0.0')
     post_build_copy = true
   else
-    args += ["--output", output_path]
+    args += ['--output', output_path]
   end
 
   Gem::GemRunner.new.run args
 
   if post_build_copy == true
     # Move output to correct location
-    puts "Copying output gem to output_path due to pre 3.0.0 rubygems version"
+    puts 'Copying gem to output_path due to pre 3.0.0 rubygems version'
     FileUtils.cp(File.basename(output_path), output_path)
   end
 rescue Gem::SystemExitException => e
