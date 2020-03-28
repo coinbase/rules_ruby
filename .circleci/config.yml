@@ -70,7 +70,7 @@ jobs:
             bazel run :bin \
             && bazel run :rubocop
 
-  bazel_build_examples_simple_script:
+  bazel_build_examples_gem:
     executor: base-executor
     working_directory: ~/project/examples/example_gem
     steps:
