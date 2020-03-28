@@ -77,7 +77,9 @@ jobs:
       - checkout:
           path: ~/project
       - setup-bazel-env
-      - bazel-build-test-all
+      - run:
+          name: "Build all"
+          command: bazel build //...:all
 
 
   buildifier:
