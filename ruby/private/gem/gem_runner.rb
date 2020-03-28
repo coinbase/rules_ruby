@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'rubygems/gem_runner'
 require 'rubygems/exceptions'
+require 'rubygems/version'
 
 require 'fileutils'
 
@@ -40,7 +41,21 @@ begin
     end
   end
 
+  output_path = args.pop()
+  post_build_copy = false
+  if Gem.rubygems_version < Gem::Version.new('3.0.0')
+    post_build_copy = true
+  else
+    args = args + ["--output", output_path]
+  end
+
   Gem::GemRunner.new.run args
+
+  if post_build_copy == true
+    # Move output to correct location
+    FileUtils.cp(File.basename(output_path), output_path)
+  end
 rescue Gem::SystemExitException => e
+  warn "bye"
   exit e.exit_code
 end

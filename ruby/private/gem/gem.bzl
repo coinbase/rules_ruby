@@ -7,7 +7,7 @@ def _rb_build_gem_impl(ctx):
         ctx.file._gem_runner.path,
         "build",
         ctx.attr.gemspec[RubyGem].gemspec.path,
-        "--output",
+        # Last arg should always be output path
         ctx.outputs.gem.path,
     ]
 
