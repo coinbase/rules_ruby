@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'rubygems/gem_runner'
 require 'rubygems/exceptions'
+require 'rubygems/version'
 
 require 'fileutils'
 
@@ -16,9 +17,9 @@ def dereference!(file)
 
   tmpname = '/tmp' + File.expand_path(file)
   FileUtils.mkdir_p(File.dirname(tmpname))
-  warn "copying #{file} to #{tmpname}"
+  puts "copying #{file} to #{tmpname}"
   FileUtils.cp(file, tmpname)
-  warn "moving #{tmpname} to #{file}"
+  puts "moving #{tmpname} to #{file}"
   FileUtils.mv(tmpname, file)
 end
 
@@ -40,7 +41,21 @@ begin
     end
   end
 
+  output_path = args.pop
+  post_build_copy = false
+  if Gem.rubygems_version < Gem::Version.new('3.0.0')
+    post_build_copy = true
+  else
+    args += ['--output', output_path]
+  end
+
   Gem::GemRunner.new.run args
+
+  if post_build_copy == true
+    # Move output to correct location
+    puts 'Copying gem to output_path due to pre 3.0.0 rubygems version'
+    FileUtils.cp(File.basename(output_path), output_path)
+  end
 rescue Gem::SystemExitException => e
   exit e.exit_code
 end
