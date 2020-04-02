@@ -15,11 +15,17 @@ def _rb_build_gem_impl(ctx):
     for dep in ctx.attr.deps:
         _inputs.extend(dep.files.to_list())
 
+    # the gem_runner does not support sandboxing because
+    # gem build cannot handle symlinks and needs to write
+    # the files as actual files.
     ctx.actions.run(
         inputs = _inputs,
         executable = ctx.attr.ruby_interpreter.files_to_run.executable,
         arguments = args,
         outputs = [ctx.outputs.gem],
+        execution_requirements = {
+            "no-sandbox": "1",
+        },
     )
 
 _ATTRS = {
