@@ -14,7 +14,6 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
         name = _gemspec_name,
         gem_name = gem_name,
         version = version,
-        tags = tags,
         **kwargs
     )
 
