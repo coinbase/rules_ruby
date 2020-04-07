@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'optparse'
 
@@ -22,21 +24,21 @@ def parse_opts
     end
   end.parse!
 
-  return output_file, metadata_file, template_file
+  [output_file, metadata_file, template_file]
 end
 
 def add_src_file(src, new_srcs, new_require_paths)
-  if File.file?(src)
-    new_srcs << src
-    new_require_paths << File.dirname(src)
-  end
+  return unless File.file?(src)
+
+  new_srcs << src
+  new_require_paths << File.dirname(src)
 end
 
 def parse_metadata_srcs(metadata)
   # Files and required paths can include a directory which gemspec
   # cannot handle. This will convert directories to individual files
   # and update require_paths to include them..
-  srcs = metadata["srcs"]
+  srcs = metadata['srcs']
   new_require_paths = []
   new_srcs = []
   srcs.each do |src|
@@ -48,16 +50,16 @@ def parse_metadata_srcs(metadata)
       add_src_file(src, new_srcs, new_require_paths)
     end
   end
-  metadata["srcs"] = new_srcs
-  metadata["require_paths"] = new_require_paths
-  return metadata
+  metadata['srcs'] = new_srcs
+  metadata['require_paths'] = new_require_paths
+  metadata
 end
 
 def main
   output_file, metadata_file, template_file = parse_opts
   data = File.read(template_file)
-  f = File.read(metadata_file)
-  metadata = JSON.parse(f)
+  m = File.read(metadata_file)
+  metadata = JSON.parse(m)
 
   metadata = parse_metadata_srcs metadata
   filtered_data = data
@@ -67,8 +69,8 @@ def main
     filtered_data = filtered_data.gsub(replace_val, value.to_s)
   end
 
-  File.open(output_file, "w") do |f|
-    f.write(filtered_data)
+  File.open(output_file, 'w') do |out_file|
+    out_file.write(filtered_data)
   end
 end
 

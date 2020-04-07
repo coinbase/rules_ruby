@@ -14,15 +14,6 @@ def _get_transitive_srcs(srcs, deps):
         transitive = [dep[RubyLibrary].transitive_ruby_srcs for dep in deps],
     )
 
-def _unique_elems(list):
-    _out = []
-    _prev = None
-    for elem in sorted(list):
-        if _prev != elem:
-            _out.append(elem)
-
-    return _out
-
 def _rb_gem_impl(ctx):
     gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
     metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
