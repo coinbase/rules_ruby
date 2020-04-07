@@ -24,26 +24,41 @@ def _unique_elems(list):
     return _out
 
 def _rb_gem_impl(ctx):
-    gemspec = ctx.actions.declare_file("%s.gemspec" % ctx.attr.gem_name)
+    gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
+    metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
 
     _ruby_files = []
-    _require_paths = []
-    for file in _get_transitive_srcs([], ctx.attr.deps).to_list():
-        _ruby_files.append(file.short_path)
-        _require_paths.append(file.dirname)
+    file_deps = _get_transitive_srcs([], ctx.attr.deps).to_list()
+    for f in file_deps:
+        _ruby_files.append(f.short_path)
 
-    _require_paths = _unique_elems(_require_paths)  # Set is not supported in Starlark
+    ctx.actions.write(
+        output = metadata_file,
+        content = struct(
+            name = ctx.attr.gem_name,
+            srcs = _ruby_files,
+            authors = ctx.attr.authors,
+            version = ctx.attr.version,
+        ).to_json(),
+    )
 
-    ctx.actions.expand_template(
-        template = ctx.file._gemspec_template,
-        output = gemspec,
-        substitutions = {
-            "{name}": "\"%s\"" % ctx.attr.gem_name,
-            "{srcs}": repr(_ruby_files),
-            "{authors}": repr(ctx.attr.authors),
-            "{version}": "\"{}\"".format(ctx.attr.version),
-            "{require_paths}": repr(_require_paths),
-        },
+    ctx.actions.run(
+        inputs = [
+            ctx.file._gemspec_template,
+            ctx.file._gemspec_builder,
+            metadata_file,
+        ] + file_deps,
+        executable = ctx.attr.ruby_interpreter.files_to_run.executable,
+        arguments = [
+            ctx.file._gemspec_builder.path,
+            "--output",
+            gemspec.path,
+            "--metadata",
+            metadata_file.path,
+            "--template",
+            ctx.file._gemspec_template.path,
+        ],
+        outputs = [gemspec],
     )
 
     return [
@@ -66,10 +81,6 @@ _ATTRS = {
     "data": attr.label_list(
         allow_files = True,
     ),
-    "_gemspec_template": attr.label(
-        allow_single_file = True,
-        default = "gemspec_template.tpl",
-    ),
     "gem_name": attr.string(),
     "srcs": attr.label_list(
         allow_files = True,
@@ -79,6 +90,23 @@ _ATTRS = {
         allow_files = True,
     ),
     "require_paths": attr.string_list(),
+    "_gemspec_template": attr.label(
+        allow_single_file = True,
+        default = "gemspec_template.tpl",
+    ),
+    "ruby_sdk": attr.string(
+        default = "@org_ruby_lang_ruby_toolchain",
+    ),
+    "ruby_interpreter": attr.label(
+        default = "@org_ruby_lang_ruby_toolchain//:ruby_bin",
+        allow_files = True,
+        executable = True,
+        cfg = "host",
+    ),
+    "_gemspec_builder": attr.label(
+        default = Label("@coinbase_rules_ruby//ruby/private/gem:gemspec_builder.rb"),
+        allow_single_file = True,
+    ),
 }
 
 rb_gemspec = rule(

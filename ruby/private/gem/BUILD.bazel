@@ -4,6 +4,7 @@ exports_files(
     [
         "gemspec_template.tpl",
         "gem_runner.rb",
+        "gemspec_builder.rb",
     ],
     visibility = ["//visibility:public"],
 )
