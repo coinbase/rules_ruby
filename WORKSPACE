@@ -108,3 +108,12 @@ bundle_install(
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
+
+git_repository(
+    name = "wspace_bazel_skylib",
+    commit = "9935e0f820692f5f38e3b00c64ccbbff30cebe11",
+    remote = "https://github.com/bazelbuild/bazel-skylib",
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+bazel_skylib_workspace()

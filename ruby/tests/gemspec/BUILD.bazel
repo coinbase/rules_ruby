@@ -1,0 +1,71 @@
+load("@wspace_bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("@wspace_bazel_skylib//rules:select_file.bzl", "select_file")
+load("//ruby:defs.bzl", "rb_gemspec")
+
+rb_gemspec(
+    name = "licensed_gem",
+    authors = ["Coinbase"],
+    gem_name = "licensed_gem",
+    licenses = ["MIT"],
+    version = "0.1.0",
+    deps = [
+        "//ruby/tests/gemspec/lib:example_gem",
+    ],
+)
+
+select_file(
+    name = "select_license_spec",
+    srcs = ":licensed_gem",
+    subpath = "licensed_gem.gemspec",
+)
+
+diff_test(
+    name = "licensed_gem_test",
+    file1 = ":select_license_spec",
+    file2 = ":expected/licensed_gem.gemspec"
+)
+
+rb_gemspec(
+    name = "example_gem",
+    authors = ["Coinbase"],
+    gem_name = "example_gem",
+    version = "0.1.0",
+    deps = [
+        "//ruby/tests/gemspec/lib:example_gem",
+    ],
+)
+
+select_file(
+    name = "select_example_spec",
+    srcs = ":example_gem",
+    subpath = "example_gem.gemspec",
+)
+
+diff_test(
+    name = "example_gem_test",
+    file1 = ":select_example_spec",
+    file2 = ":expected/example_gem.gemspec"
+)
+
+rb_gemspec(
+    name = "require_gem",
+    authors = ["Coinbase"],
+    gem_name = "require_gem",
+    version = "0.1.0",
+    require_paths = ["ruby/tests/gemspec/lib/foo"],
+    deps = [
+        "//ruby/tests/gemspec/lib:example_gem",
+    ],
+)
+
+select_file(
+    name = "select_require_spec",
+    srcs = ":require_gem",
+    subpath = "require_gem.gemspec",
+)
+
+diff_test(
+    name = "require_gem_test",
+    file1 = ":select_require_spec",
+    file2 = ":expected/require_gem.gemspec"
+)

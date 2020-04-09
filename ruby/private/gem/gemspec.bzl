@@ -30,6 +30,8 @@ def _rb_gem_impl(ctx):
             srcs = _ruby_files,
             authors = ctx.attr.authors,
             version = ctx.attr.version,
+            licenses = ctx.attr.licenses,
+            require_paths = ctx.attr.require_paths,
         ).to_json(),
     )
 
@@ -61,11 +63,13 @@ def _rb_gem_impl(ctx):
         ),
     ]
 
+
 _ATTRS = {
     "version": attr.string(
         default = "0.0.1",
     ),
     "authors": attr.string_list(),
+    "licenses": attr.string_list(),
     "deps": attr.label_list(
         allow_files = True,
     ),
