@@ -50,11 +50,11 @@ def parse_metadata_srcs(metadata)
   new_srcs = []
   srcs.each do |src|
     if File.directory?(src)
-      Dir.glob("#{src}/**/*") do |f|
-        new_srcs << src if File.file?(src)
+      Dir.glob("#{src}/**/*") do |_f|
+        new_srcs << f if File.file?(f)
       end
-    else
-      new_srcs << src if File.file?(src)
+    elsif File.file?(src)
+      new_srcs << src
     end
   end
   metadata['srcs'] = new_srcs
@@ -66,7 +66,6 @@ def main
   data = File.read(template_file)
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
-
 
   metadata = parse_metadata(metadata)
   filtered_data = data

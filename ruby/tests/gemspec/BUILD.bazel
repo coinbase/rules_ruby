@@ -22,7 +22,7 @@ select_file(
 diff_test(
     name = "licensed_gem_test",
     file1 = ":select_license_spec",
-    file2 = ":expected/licensed_gem.gemspec"
+    file2 = ":expected/licensed_gem.gemspec",
 )
 
 rb_gemspec(
@@ -44,15 +44,15 @@ select_file(
 diff_test(
     name = "example_gem_test",
     file1 = ":select_example_spec",
-    file2 = ":expected/example_gem.gemspec"
+    file2 = ":expected/example_gem.gemspec",
 )
 
 rb_gemspec(
     name = "require_gem",
     authors = ["Coinbase"],
     gem_name = "require_gem",
-    version = "0.1.0",
     require_paths = ["ruby/tests/gemspec/lib/foo"],
+    version = "0.1.0",
     deps = [
         "//ruby/tests/gemspec/lib:example_gem",
     ],
@@ -67,5 +67,5 @@ select_file(
 diff_test(
     name = "require_gem_test",
     file1 = ":select_require_spec",
-    file2 = ":expected/require_gem.gemspec"
+    file2 = ":expected/require_gem.gemspec",
 )

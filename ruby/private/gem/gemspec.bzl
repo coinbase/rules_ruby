@@ -63,7 +63,6 @@ def _rb_gem_impl(ctx):
         ),
     ]
 
-
 _ATTRS = {
     "version": attr.string(
         default = "0.0.1",

@@ -1,4 +1,5 @@
 package(default_visibility = ["//:__subpackages__"])
+
 load(
     "//ruby:defs.bzl",
     "rb_library",
