@@ -52,6 +52,9 @@ def _rb_gem_impl(ctx):
             ctx.file._gemspec_template.path,
         ],
         outputs = [gemspec],
+        execution_requirements = {
+            "no-sandbox": "1",
+        },
     )
 
     return [
