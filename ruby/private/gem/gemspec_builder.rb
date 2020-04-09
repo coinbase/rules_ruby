@@ -61,7 +61,7 @@ def main
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
 
-  metadata = parse_metadata_srcs metadata
+  metadata = parse_metadata_srcs(metadata)
   filtered_data = data
 
   metadata.each do |key, value|
