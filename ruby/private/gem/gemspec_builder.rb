@@ -37,9 +37,7 @@ end
 def parse_require_paths(metadata)
   if metadata['require_paths'] == []
     metadata['srcs'].each do |f|
-      if File.basename(f, '.rb') == metadata['name']
-        metadata['require_paths'] << File.dirname(f)
-      end
+      metadata['require_paths'] << File.dirname(f) if File.basename(f, '.rb') == metadata['name']
     end
   end
   metadata
