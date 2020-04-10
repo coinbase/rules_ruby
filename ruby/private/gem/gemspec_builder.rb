@@ -28,22 +28,24 @@ def parse_opts
 end
 
 def parse_metadata(metadata)
+  # Expand all of the sources first
+  metadata = expand_src_dirs(metadata)
   metadata = parse_require_paths(metadata)
-  metadata = parse_metadata_srcs(metadata)
   metadata
 end
 
 def parse_require_paths(metadata)
   if metadata['require_paths'] == []
-    expected_require_file = "#{metadata['name']}.rb"
-    Dir.glob("**/#{expected_require_file}") do |f|
-      metadata['require_paths'] << File.dirname(f)
+    metadata['srcs'] do |f|
+      if File.basename(f, '.rb') == metadata['name']
+        metadata['require_paths'] << File.dirname(f)
+      end
     end
   end
   metadata
 end
 
-def parse_metadata_srcs(metadata)
+def expand_src_dirs(metadata)
   # Files and required paths can include a directory which gemspec
   # cannot handle. This will convert directories to individual files
   srcs = metadata['srcs']
