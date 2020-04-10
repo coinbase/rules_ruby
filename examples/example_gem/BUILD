@@ -6,7 +6,7 @@ load(
 )
 
 rb_gem(
-    name = "default_gem",
+    name = "example_gem",
     authors = ["Coinbase"],
     gem_name = "example_gem",
     version = "0.1.0",

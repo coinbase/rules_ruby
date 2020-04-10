@@ -6,6 +6,7 @@ AllCops:
   DisplayCopNames: true
   Exclude:
     - "bazel-*/**/*"
+    - "ruby/tests/gemspec/expected/*"
 
 Layout/LineLength:
   Enabled: true
