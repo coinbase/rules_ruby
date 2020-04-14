@@ -23,7 +23,7 @@ def _rb_build_gem_impl(ctx):
             srcs = _srcs,
             gemspec_path = gemspec.path,
             output_path = ctx.outputs.gem.path,
-            mtime =
+            source_date_epoch = ctx.attr.source_date_epoch,
         ).to_json(),
     )
     # the gem_runner does not support sandboxing because
@@ -67,7 +67,7 @@ _ATTRS = {
     ),
     "version": attr.string(),
     "source_date_epoch": attr.string(
-        docs = "Sets source_date_epoch env var which should make output gems hermetic",
+        doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
 }
 
