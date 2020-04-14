@@ -75,6 +75,11 @@ def main
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
 
+  if metadata["source_data_epoch"]
+    # I think this will make it hermetic! YAY!
+    ENV["SOURCE_DATE_EPOCH"] = metadata["source_date_epoch"]
+  end
+
   begin
     build_gem(metadata)
   rescue Gem::SystemExitException => e
