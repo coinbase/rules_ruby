@@ -46,15 +46,18 @@ end
 def expand_src_dirs(metadata)
   # Files and required paths can include a directory which gemspec
   # cannot handle. This will convert directories to individual files
-  srcs = metadata['srcs']
+  srcs = metadata['raw_srcs']
   new_srcs = []
   srcs.each do |src|
-    if File.directory?(src)
-      Dir.glob("#{src}/**/*") do |_f|
-        new_srcs << f if File.file?(f)
+    src_path = src['src_path']
+    dest_path = src['dest_path']
+    if File.directory?(src_path)
+      Dir.glob("#{src_path}/**/*") do |f|
+        # expand the directory, replacing each src path with its dest path
+        new_srcs << f.gsub(src_path, dest_path) if File.file?(f)
       end
-    elsif File.file?(src)
-      new_srcs << src
+    elsif File.file?(src_path)
+      new_srcs << src_path
     end
   end
   metadata['srcs'] = new_srcs
@@ -66,6 +69,7 @@ def main
   data = File.read(template_file)
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
+  puts metadata
 
   metadata = parse_metadata(metadata)
   filtered_data = data

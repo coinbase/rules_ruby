@@ -3,17 +3,29 @@ load("//ruby/private:providers.bzl", "RubyGem")
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
 def _rb_build_gem_impl(ctx):
-    args = [
-        ctx.file._gem_runner.path,
-        "build",
-        ctx.attr.gemspec[RubyGem].gemspec.path,
-        # Last arg should always be output path
-        ctx.outputs.gem.path,
-    ]
+    metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
+    gemspec = ctx.attr.gemspec[RubyGem].gemspec
 
-    _inputs = [ctx.file._gem_runner]
+    _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
+    _srcs = []
     for dep in ctx.attr.deps:
-        _inputs.extend(dep.files.to_list())
+        file_deps = dep.files.to_list()
+        _inputs.extend(file_deps)
+        for f in file_deps:
+            _srcs.append({
+                "src_path": f.path,
+                "dest_path": f.short_path,
+            })
+
+    ctx.actions.write(
+        output = metadata_file,
+        content = struct(
+            srcs = _srcs,
+            gemspec_path = gemspec.path,
+            output_path = ctx.outputs.gem.path,
+            source_date_epoch = ctx.attr.source_date_epoch,
+        ).to_json(),
+    )
 
     # the gem_runner does not support sandboxing because
     # gem build cannot handle symlinks and needs to write
@@ -21,7 +33,11 @@ def _rb_build_gem_impl(ctx):
     ctx.actions.run(
         inputs = _inputs,
         executable = ctx.attr.ruby_interpreter.files_to_run.executable,
-        arguments = args,
+        arguments = [
+            ctx.file._gem_runner.path,
+            "--metadata",
+            metadata_file.path,
+        ],
         outputs = [ctx.outputs.gem],
         execution_requirements = {
             "no-sandbox": "1",
@@ -51,6 +67,9 @@ _ATTRS = {
         allow_files = True,
     ),
     "version": attr.string(),
+    "source_date_epoch": attr.string(
+        doc = "Sets source_date_epoch env var which should make output gems hermetic",
+    ),
 }
 
 rb_build_gem = rule(
