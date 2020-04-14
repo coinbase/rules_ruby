@@ -5,11 +5,6 @@ load("//ruby/private:providers.bzl", "RubyGem")
 def _rb_build_gem_impl(ctx):
     metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
     gemspec = ctx.attr.gemspec[RubyGem].gemspec
-    args = [
-        ctx.file._gem_runner.path,
-        "--metadata",
-        metadata_file.path,
-    ]
 
     _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
     _srcs = []
@@ -36,7 +31,11 @@ def _rb_build_gem_impl(ctx):
     ctx.actions.run(
         inputs = _inputs,
         executable = ctx.attr.ruby_interpreter.files_to_run.executable,
-        arguments = args,
+        arguments = [
+            ctx.file._gem_runner.path,
+            "--metadata",
+            metadata_file.path,
+        ],
         outputs = [ctx.outputs.gem],
         execution_requirements = {
             "no-sandbox": "1",
