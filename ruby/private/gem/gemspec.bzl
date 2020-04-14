@@ -21,9 +21,9 @@ def _rb_gem_impl(ctx):
     _ruby_files = []
     file_deps = _get_transitive_srcs([], ctx.attr.deps).to_list()
     for f in file_deps:
-      # For some files the src_path and dest_path will be the same, but
-      # for othrs the src_path will be in bazel)out while the dest_path
-      # will be from the workspace root.
+        # For some files the src_path and dest_path will be the same, but
+        # for othrs the src_path will be in bazel)out while the dest_path
+        # will be from the workspace root.
         _ruby_files.append({
             "src_path": f.path,
             "dest_path": f.short_path,

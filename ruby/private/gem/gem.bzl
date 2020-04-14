@@ -26,6 +26,7 @@ def _rb_build_gem_impl(ctx):
             source_date_epoch = ctx.attr.source_date_epoch,
         ).to_json(),
     )
+
     # the gem_runner does not support sandboxing because
     # gem build cannot handle symlinks and needs to write
     # the files as actual files.

@@ -52,7 +52,7 @@ end
 def do_build(dir, gemspec_path, output_path)
   args = [
     'build',
-    File.join(dir, File.basename(gemspec_path)),
+    File.join(dir, File.basename(gemspec_path))
   ]
 
   Gem::GemRunner.new.run args
@@ -75,9 +75,9 @@ def main
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
 
-  if metadata["source_date_epoch"] != ""
+  if metadata['source_date_epoch'] != ''
     # I think this will make it hermetic! YAY!
-    ENV["SOURCE_DATE_EPOCH"] = metadata["source_date_epoch"]
+    ENV['SOURCE_DATE_EPOCH'] = metadata['source_date_epoch']
   end
 
   begin
