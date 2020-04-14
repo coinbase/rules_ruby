@@ -10,6 +10,7 @@ load(
 def rb_gem(name, version, gem_name, srcs = [], **kwargs):
     _gemspec_name = name + "_gemspec"
     deps = kwargs.get("deps", [])
+    source_date_epoch = kwargs.pop("source_date_epoch", None)
 
     _rb_gemspec(
         name = _gemspec_name,
@@ -25,4 +26,5 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
         version = version,
         deps = srcs + deps,
         visibility = ["//visibility:public"],
+        source_date_epoch = source_date_epoch,
     )
