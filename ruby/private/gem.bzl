@@ -9,6 +9,7 @@ load(
 
 def rb_gem(name, version, gem_name, srcs = [], **kwargs):
     _gemspec_name = name + "_gemspec"
+    deps = kwargs.get("deps", [])
 
     _rb_gemspec(
         name = _gemspec_name,
@@ -22,6 +23,6 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
         gem_name = gem_name,
         gemspec = _gemspec_name,
         version = version,
-        deps = srcs + [_gemspec_name],
+        deps = srcs + deps,
         visibility = ["//visibility:public"],
     )

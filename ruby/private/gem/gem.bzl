@@ -3,18 +3,33 @@ load("//ruby/private:providers.bzl", "RubyGem")
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
 def _rb_build_gem_impl(ctx):
+    metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
+    gemspec = ctx.attr.gemspec[RubyGem].gemspec
     args = [
         ctx.file._gem_runner.path,
-        "build",
-        ctx.attr.gemspec[RubyGem].gemspec.path,
-        # Last arg should always be output path
-        ctx.outputs.gem.path,
+        "--metadata",
+        metadata_file.path,
     ]
 
-    _inputs = [ctx.file._gem_runner]
+    _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
+    _srcs = []
     for dep in ctx.attr.deps:
-        _inputs.extend(dep.files.to_list())
+        file_deps = dep.files.to_list()
+        _inputs.extend(file_deps)
+        for f in file_deps:
+            _srcs.append({
+                "src_path": f.path,
+                "dest_path": f.short_path,
+            })
 
+    ctx.actions.write(
+        output = metadata_file,
+        content = struct(
+            srcs = _srcs,
+            gemspec_path = gemspec.path,
+            output_path = ctx.outputs.gem.path
+        ).to_json(),
+    )
     # the gem_runner does not support sandboxing because
     # gem build cannot handle symlinks and needs to write
     # the files as actual files.
