@@ -69,7 +69,6 @@ def main
   data = File.read(template_file)
   m = File.read(metadata_file)
   metadata = JSON.parse(m)
-  puts metadata
 
   metadata = parse_metadata(metadata)
   filtered_data = data
