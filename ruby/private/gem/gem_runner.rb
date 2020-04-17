@@ -43,9 +43,7 @@ def copy_srcs(dir, srcs, verbose)
     FileUtils.cp_r(src_path, tmpname)
     # Copying a directory will not dereference symlinks
     # in the directory. They need to be removed too.
-    if File.directory?(tmpname)
-      dereference_symlinks(tmpname, verbose)
-    end
+    dereference_symlinks(tmpname, verbose) if File.directory?(tmpname)
   end
 end
 

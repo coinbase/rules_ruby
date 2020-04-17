@@ -71,7 +71,7 @@ _ATTRS = {
     "source_date_epoch": attr.string(
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
-    "verbose": attr.bool(default=False),
+    "verbose": attr.bool(default = False),
 }
 
 rb_build_gem = rule(
