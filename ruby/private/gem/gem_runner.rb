@@ -52,7 +52,7 @@ def dereference_symlinks(dir, verbose)
     if File.symlink?(src)
       actual_src = File.realpath(src)
       puts "Dereferencing symlink at #{src} to #{actual_src}" if verbose
-      FileUtils.cp_r(actual_src, src)
+      FileUtils.cp_r(actual_src, src, remove_destination=true)
     end
   end
 end
