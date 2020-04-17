@@ -24,6 +24,7 @@ def _rb_build_gem_impl(ctx):
             gemspec_path = gemspec.path,
             output_path = ctx.outputs.gem.path,
             source_date_epoch = ctx.attr.source_date_epoch,
+            verbose = ctx.attr.verbose,
         ).to_json(),
     )
 
@@ -70,6 +71,7 @@ _ATTRS = {
     "source_date_epoch": attr.string(
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
+    "verbose": attr.bool(default = False),
 }
 
 rb_build_gem = rule(
