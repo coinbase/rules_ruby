@@ -1,22 +1,6 @@
 load("//ruby/private:constants.bzl", "RULES_RUBY_WORKSPACE_NAME")
 load("//ruby/private/toolchains:repository_context.bzl", "ruby_repository_context")
 
-def _install_ruby_version(ctx, version):
-    print("download and extract ruby-build")
-    ctx.download_and_extract(
-        url = "https://github.com/rbenv/ruby-build/archive/v20191205.tar.gz",
-        sha256 = "d8ffe806a215b3afacead72e766f293ce380c78a143911b84cdb5f33e20a5284",
-        stripPrefix = "ruby-build-20191205",
-    )
-
-    install_path = "./build"
-    print("./bin/ruby-build", "--verbose", version, install_path)
-    ctx.execute(
-        ["./bin/ruby-build", "--verbose", version, install_path],
-        quiet = False,
-        timeout = 1600,  # massive timeout because this does a lot and is a beast
-    )
-
 def _is_subpath(path, ancestors):
     """Determines if path is a subdirectory of one of the ancestors"""
     for ancestor in ancestors:
@@ -95,7 +79,7 @@ def host_ruby_is_correct_version(ctx, version):
 
     ruby_version = ctx.execute(["ruby", "-e", "print RUBY_VERSION"]).stdout
 
-    have_ruby_version = (version == ruby_version)
+    have_ruby_version = ruby_version.startswith(version)
 
     if have_ruby_version:
         print("Found local Ruby SDK version '%s' which matches requested version '%s'" % (ruby_version, version))
@@ -105,11 +89,12 @@ def host_ruby_is_correct_version(ctx, version):
 def _ruby_runtime_impl(ctx):
     # If the current version of ruby is correct use that
     version = ctx.attr.version
-    if version == "host" or host_ruby_is_correct_version(ctx, version):
+    if version == "host":
         interpreter_path = ctx.which("ruby")
     else:
-        _install_ruby_version(ctx, version)
-        interpreter_path = ctx.path("./build/bin/ruby")
+        if not host_ruby_is_correct_version(ctx, version):
+            fail("\n\nIncorrect ruby version found: required version " + version + ".\nInstall with rbenv then `rbenv global <version>\n\n")
+        interpreter_path = ctx.which("ruby")
 
     if not interpreter_path:
         fail(

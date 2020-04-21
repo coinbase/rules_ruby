@@ -15,7 +15,7 @@ load(
 
 rules_ruby_dependencies()
 
-ruby_register_toolchains(version = "2.6.5")
+ruby_register_toolchains()
 
 load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
