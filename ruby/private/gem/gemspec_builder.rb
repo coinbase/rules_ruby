@@ -57,7 +57,7 @@ def expand_src_dirs(metadata)
         new_srcs << f.gsub(src_path, dest_path) if File.file?(f)
       end
     elsif File.file?(src_path)
-      new_srcs << src_path
+      new_srcs << dest_path
     end
   end
   metadata['srcs'] = new_srcs
