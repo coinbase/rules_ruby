@@ -4,15 +4,23 @@
 require 'rubygems/gem_runner'
 
 def main
-  # Gem install bundler
-  # TODO: DO NOT MERGE UNTIL YOU HAVE ADDED THE BUNDLER VERSION LOGIC
+  # This should always be set by bundle.bzl
+  bundler_version = ARGV[0]
+
   args = [
     'install',
     '--install-dir',
     'bundler',
-    'bundler'
+    'bundler',
+    '-v',
+    bundler_version
   ]
-  Gem::GemRunner.new.run args
+
+  begin
+    Gem::GemRunner.new.run args
+  rescue Gem::SystemExitException => e
+    exit e.exit_code
+  end
 end
 
 main if $PROGRAM_NAME == __FILE__
