@@ -11,9 +11,7 @@ def main
     'install',
     '--install-dir',
     'bundler',
-    'bundler',
-    '-v',
-    bundler_version
+    "bundler:#{bundler_version}"
   ]
 
   begin
