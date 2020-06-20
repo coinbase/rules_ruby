@@ -1,4 +1,4 @@
-load(":constants.bzl", "RUBY_ATTRS", "TOOLCHAIN_TYPE_NAME")
+load("//ruby/private:constants.bzl", "RUBY_ATTRS", "TOOLCHAIN_TYPE_NAME")
 load(
     "//ruby/private/tools:deps.bzl",
     _transitive_deps = "transitive_deps",

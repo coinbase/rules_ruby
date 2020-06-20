@@ -30,7 +30,7 @@ RUBY_ATTRS = {
     ),
     "_wrapper_template": attr.label(
         allow_single_file = True,
-        default = "binary_wrapper.tpl",
+        default = "//ruby/private/binary:binary_wrapper.tpl",
     ),
     "_misc_deps": attr.label_list(
         allow_files = True,
