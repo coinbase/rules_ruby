@@ -7,6 +7,7 @@ BUNDLE_PATH = "lib"
 BUNDLE_BINARY = "bundler/bin/bundle"
 
 SCRIPT_INSTALL_BUNDLER = "download_bundler.rb"
+SCRIPT_ACTIVATE_GEMS = "activate_gems.rb"
 SCRIPT_BUILD_FILE_GENERATOR = "create_bundle_build_file.rb"
 
 # Runs bundler with arbitrary arguments
@@ -74,6 +75,7 @@ def _rb_bundle_impl(ctx):
     ctx.symlink(ctx.attr.gemfile_lock, "Gemfile.lock")
     ctx.symlink(ctx.attr._create_bundle_build_file, SCRIPT_BUILD_FILE_GENERATOR)
     ctx.symlink(ctx.attr._install_bundler, SCRIPT_INSTALL_BUNDLER)
+    ctx.symlink(ctx.attr._activate_gems, SCRIPT_ACTIVATE_GEMS)
 
     bundler_version = ctx.attr.bundler_version
 
@@ -133,6 +135,13 @@ rb_bundle = repository_rule(
                 SCRIPT_BUILD_FILE_GENERATOR,
             ),
             doc = "Creates the BUILD file",
+            allow_single_file = True,
+        ),
+        "_activate_gems": attr.label(
+            default = "%s//ruby/private/bundle:%s" % (
+                RULES_RUBY_WORKSPACE_NAME,
+                SCRIPT_ACTIVATE_GEMS
+            ),
             allow_single_file = True,
         ),
     },

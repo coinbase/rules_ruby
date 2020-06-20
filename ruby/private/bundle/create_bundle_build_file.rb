@@ -10,9 +10,9 @@ TEMPLATE = <<~MAIN_TEMPLATE
   package(default_visibility = ["//visibility:public"])
 
   rb_library(
-    name = "bundler_setup",
-    srcs = ["lib/bundler/setup.rb"],
-    visibility = ["//visibility:private"],
+    name = "activate_gems",
+    srcs = ["activate_gems.rb"],
+    rubyopt = ["-r{runfiles_path}/activate_gems.rb"],
   )
 
   rb_library(
@@ -22,7 +22,6 @@ TEMPLATE = <<~MAIN_TEMPLATE
         "bundler/**/*",
       ],
     ),
-    rubyopt = ["{bundler_setup}"],
   )
 
   # PULL EACH GEM INDIVIDUALLY
@@ -45,7 +44,6 @@ GEM_TEMPLATE = <<~GEM_TEMPLATE
     ),
     deps = {deps},
     includes = ["lib/ruby/{ruby_version}/gems/{name}-{version}*/lib"],
-    rubyopt = ["{bundler_setup}"],
   )
 GEM_TEMPLATE
 
@@ -56,7 +54,6 @@ ALL_GEMS = <<~ALL_GEMS
       {gems_lib_files},
     ),
     includes = {gems_lib_paths},
-    rubyopt = ["{bundler_setup}"],
   )
 ALL_GEMS
 
@@ -113,7 +110,7 @@ class BundleBuildFileGenerator
       .gsub('{repo_name}', repo_name)
       .gsub('{ruby_version}', ruby_version)
       .gsub('{binaries}', binaries.to_s)
-      .gsub('{bundler_setup}', bundler_setup_require)
+      .gsub('{runfiles_path}', runfiles_path)
 
     # strip bundler version so we can process this file
     remove_bundler_version!
@@ -125,19 +122,14 @@ class BundleBuildFileGenerator
     template_out.puts ALL_GEMS
       .gsub('{gems_lib_files}', gem_lib_paths.map { |p| "#{p}/**/*.rb" }.to_s)
       .gsub('{gems_lib_paths}', gem_lib_paths.to_s)
-      .gsub('{bundler_setup}', bundler_setup_require)
 
     ::File.open(build_file, 'w') { |f| f.puts template_out.string }
   end
 
   private
 
-  def bundler_setup_require
-    @bundler_setup_require ||= "-r#{runfiles_path('lib/bundler/setup.rb')}"
-  end
-
-  def runfiles_path(path)
-    "${RUNFILES_DIR}/#{repo_name}/#{path}"
+  def runfiles_path
+    "${RUNFILES_DIR}/#{repo_name}"
   end
 
   # This method scans the contents of the Gemfile.lock and if it finds BUNDLED WITH
@@ -157,7 +149,7 @@ class BundleBuildFileGenerator
   def register_gem(spec, template_out, gem_lib_paths)
     gem_lib_paths << GEM_LIB_PATH[ruby_version, spec.name, spec.version]
     deps = spec.dependencies.map { |d| ":#{d.name}" }
-    deps += [':bundler_setup']
+    deps += [':activate_gems']
 
     exclude_array = excludes[spec.name] || []
     # We want to exclude files and folder with spaces in them
@@ -170,11 +162,9 @@ class BundleBuildFileGenerator
       .gsub('{deps}', deps.to_s)
       .gsub('{repo_name}', repo_name)
       .gsub('{ruby_version}', ruby_version)
-      .gsub('{bundler_setup}', bundler_setup_require)
   end
 end
 
-# ruby ./create_bundle_build_file.rb "BUILD.bazel" "Gemfile.lock" "repo_name" "[]" "wsp_name"
 if $PROGRAM_NAME == __FILE__
   if ARGV.length != 5
     warn("USAGE: #{$PROGRAM_NAME} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name")
@@ -189,5 +179,4 @@ if $PROGRAM_NAME == __FILE__
                                excludes: JSON.parse(excludes),
                                workspace_name: workspace_name)
                           .generate!
-
 end

@@ -32,6 +32,10 @@ RUBY_ATTRS = {
         allow_single_file = True,
         default = "//ruby/private/binary:binary_wrapper.tpl",
     ),
+    "_gem_activate": attr.label(
+        allow_single_file = True,
+        default = "//ruby/private/binary:activate_gems.rb",
+    ),
     "_misc_deps": attr.label_list(
         allow_files = True,
         default = ["@bazel_tools//tools/bash/runfiles"],
