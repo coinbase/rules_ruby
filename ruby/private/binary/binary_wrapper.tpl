@@ -39,6 +39,14 @@ def find_runfiles
   raise "Cannot find .runfiles directory for #{$0}"
 end
 
+def get_repository_imports(runfiles)	
+  Dir.children(runfiles).map {|d|	
+    File.join(runfiles, d)	
+  }.select {|d|	
+    File.directory? d	
+  }	
+end
+
 # Finds the runfiles manifest or the runfiles directory.
 def runfiles_envvar(runfiles)
   # If this binary is the data-dependency of another one, the other sets
@@ -105,6 +113,11 @@ def main(args)
 
   runfiles_envkey, runfiles_envvalue = runfiles_envvar(runfiles)
   ENV[runfiles_envkey] = runfiles_envvalue if runfiles_envkey
+
+  loadpaths = []
+  loadpaths += get_repository_imports(runfiles)
+  loadpaths += ENV['RUBYLIB'].split(':') if ENV.key?('RUBYLIB')
+  ENV['RUBYLIB'] = loadpaths.join(':')
 
   setup_gem_path(runfiles)
 

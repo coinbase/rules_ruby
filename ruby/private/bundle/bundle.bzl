@@ -26,7 +26,8 @@ def run_bundler(runtime_ctx, bundler_arguments):
     return runtime_ctx.ctx.execute(
         args,
         quiet = False,
-        environment = runtime_ctx.environment,
+        # Need to put our bundler folder on the path for it to be able to bundle install
+        environment = {"GEM_PATH": "bundler"},
     )
 
 def install_bundler(runtime_ctx, bundler_version):
