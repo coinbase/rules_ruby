@@ -1,3 +1,3 @@
-Gem::Specification.each do |spec|
-  spec.activate
-end
+# frozen_string_literal: true
+
+Gem::Specification.each(&:activate)
