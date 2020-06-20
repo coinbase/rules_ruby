@@ -85,6 +85,7 @@ def _rb_bundle_impl(ctx):
         interpreter = ctx.path(ctx.attr.ruby_interpreter),
         environment = {"RUBYOPT": "--enable-gems"},
     )
+
     # 1. Install the right version of the Bundler Gem
     install_bundler(runtime_ctx, bundler_version)
 
@@ -140,7 +141,7 @@ rb_bundle = repository_rule(
         "_activate_gems": attr.label(
             default = "%s//ruby/private/bundle:%s" % (
                 RULES_RUBY_WORKSPACE_NAME,
-                SCRIPT_ACTIVATE_GEMS
+                SCRIPT_ACTIVATE_GEMS,
             ),
             allow_single_file = True,
         ),

@@ -21,7 +21,6 @@ def _get_gem_path(incpaths):
     incpath = incpaths[0]
     return incpath.rsplit("/", 3)[0]
 
-
 def _get_bundle_path(gem_path):
     """
     This is mainly a way to get the bundle name so we can add the path to bundler to the gem
