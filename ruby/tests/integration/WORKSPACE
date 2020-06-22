@@ -17,10 +17,6 @@ rules_ruby_dependencies()
 
 ruby_register_toolchains()
 
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()
-
 load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
 rb_bundle(
