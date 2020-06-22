@@ -17,7 +17,12 @@ rb_binary(
         ],
     ),
     main = ":bin/rails",
+    force_gem_pristine = [
+        "--extensions",
+    ],
     deps = [
+        "@bundle//:listen",
         "@bundle//:rails",
+        "@bundle//:pry-byebug",
     ],
 )
