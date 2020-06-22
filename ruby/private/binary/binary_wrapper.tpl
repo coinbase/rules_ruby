@@ -39,16 +39,16 @@ def find_runfiles
   raise "Cannot find .runfiles directory for #{$0}"
 end
 
-def create_loadpath_entries(custom, runfiles)	
+def create_loadpath_entries(custom, runfiles)
   [runfiles] + custom.map {|path| File.join(runfiles, path) }
 end
 
-def get_repository_imports(runfiles)	
-  Dir.children(runfiles).map {|d|	
-    File.join(runfiles, d)	
-  }.select {|d|	
-    File.directory? d	
-  }	
+def get_repository_imports(runfiles)
+  Dir.children(runfiles).map {|d|
+    File.join(runfiles, d)
+  }.select {|d|
+    File.directory? d
+  }
 end
 
 # Finds the runfiles manifest or the runfiles directory.

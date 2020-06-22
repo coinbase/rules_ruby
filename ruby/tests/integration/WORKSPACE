@@ -1,0 +1,32 @@
+workspace(name = "coinbase_rules_ruby_integration_tests")
+
+# Importing rules_ruby from the parent directory for developing
+# rules_ruby itself...
+local_repository(
+    name = "coinbase_rules_ruby",
+    path = "../../..",
+)
+
+load(
+    "@coinbase_rules_ruby//ruby:deps.bzl",
+    "ruby_register_toolchains",
+    "rules_ruby_dependencies",
+)
+
+rules_ruby_dependencies()
+
+ruby_register_toolchains()
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
+load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
+
+rb_bundle(
+    # Name this not bundle to validate we aren't 
+    # hardcoding bundle
+    name = "integration_test_bundle",
+    gemfile = "//:Gemfile",
+    gemfile_lock = "//:Gemfile.lock",
+)
