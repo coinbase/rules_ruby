@@ -37,3 +37,13 @@ describe 'gem loading' do
     expect { Gem::Specification.find_by_name('bundler') }.to raise_error(Gem::MissingSpecError)
   end
 end
+
+describe 'validate rb_env' do
+  it 'sets GEM_HOME correctly' do
+    expect(ENV["GEM_HOME"]).to eq("")
+  end
+
+  it 'sets GEM_PATH correctly' do
+    expect(ENV["GEM_PATH"]).to eq("")
+  end
+end

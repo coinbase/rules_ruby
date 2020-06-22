@@ -1,4 +1,4 @@
-workspace(name = "coinbase_rules_ruby_integration_tests")
+workspace(name = "coinbase_rules_ruby_integration")
 
 # Importing rules_ruby from the parent directory for developing
 # rules_ruby itself...
