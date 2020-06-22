@@ -31,9 +31,12 @@ rb_test(
         "spec",
     ],
     main = "@integration_test_bundle//:bin/rspec",
+    tags = [
+        "exclusive",
+        "external",
+    ],
     deps = [
         "@integration_test_bundle//:rspec",
         "@integration_test_bundle//:rspec-its",
     ],
-    tags = ["exclusive", "external"],
 )

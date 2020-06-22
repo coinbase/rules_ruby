@@ -20,7 +20,7 @@ ruby_register_toolchains()
 load("@coinbase_rules_ruby//ruby:defs.bzl", "rb_bundle")
 
 rb_bundle(
-    # Name this not bundle to validate we aren't 
+    # Name this not bundle to validate we aren't
     # hardcoding bundle
     name = "integration_test_bundle",
     gemfile = "//:Gemfile",

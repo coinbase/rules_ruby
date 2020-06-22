@@ -16,13 +16,13 @@ rb_binary(
             "config.ru",
         ],
     ),
-    main = ":bin/rails",
     force_gem_pristine = [
         "--extensions",
     ],
+    main = ":bin/rails",
     deps = [
         "@bundle//:listen",
-        "@bundle//:rails",
         "@bundle//:pry-byebug",
+        "@bundle//:rails",
     ],
 )

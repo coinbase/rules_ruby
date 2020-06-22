@@ -13,18 +13,18 @@ describe 'gem loading' do
   it 'only loads expected gems and their deps' do
     expect(Gem.loaded_specs.length).to eq(12)
     expect(Gem.loaded_specs.keys).to contain_exactly(
-      "awesome_print",
-      "diff-lcs",
-      "ipaddr",
-      "openssl",
-      "rspec",
-      "rspec-core",
-      "rspec-expectations",
-      "rspec-its",
-      "rspec-mocks",
-      "rspec-support",
-      "stringio",
-      "strscan"
+      'awesome_print',
+      'diff-lcs',
+      'ipaddr',
+      'openssl',
+      'rspec',
+      'rspec-core',
+      'rspec-expectations',
+      'rspec-its',
+      'rspec-mocks',
+      'rspec-support',
+      'stringio',
+      'strscan'
     )
   end
 
@@ -40,10 +40,13 @@ end
 
 describe 'validate rb_env' do
   it 'sets GEM_HOME correctly' do
-    expect(ENV["GEM_HOME"]).to eq("")
+    expect(ENV['GEM_HOME']).to end_with('rb_default_test.runfiles/integration_test_bundle/lib/ruby/2.6.0')
   end
 
   it 'sets GEM_PATH correctly' do
-    expect(ENV["GEM_PATH"]).to eq("")
+    gem_paths = ENV['GEM_PATH'].split(':')
+    expect(gem_paths.length).to eq(2)
+    expect(gem_paths[0]).to end_with('rb_default_test.runfiles/integration_test_bundle/lib/ruby/2.6.0')
+    expect(gem_paths[1]).to end_with('rb_default_test.runfiles/integration_test_bundle/bundler')
   end
 end
