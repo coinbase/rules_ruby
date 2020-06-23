@@ -4,7 +4,6 @@ load("//ruby/private:providers.bzl", "RubyRuntimeContext")
 DEFAULT_BUNDLER_VERSION = "2.1.2"
 BUNDLE_BIN_PATH = "bin"
 BUNDLE_PATH = "lib"
-BUNDLE_BINARY = "bundler/bin/bundle"
 
 SCRIPT_INSTALL_BUNDLER = "download_bundler.rb"
 SCRIPT_ACTIVATE_GEMS = "activate_gems.rb"
@@ -20,7 +19,7 @@ def run_bundler(runtime_ctx, bundler_arguments):
         ".",
         "-I",  # Used to tell Ruby where to load the library scripts
         BUNDLE_PATH,  # Add vendor/bundle to the list of resolvers
-        BUNDLE_BINARY,  # our binary
+        "bundler/gems/bundler-{}/exe/bundle".format(runtime_ctx.bundler_version),  # our binary
     ] + bundler_arguments
 
     return runtime_ctx.ctx.execute(
@@ -30,11 +29,11 @@ def run_bundler(runtime_ctx, bundler_arguments):
         environment = {"GEM_HOME": "bundler", "GEM_PATH": "bundler"},
     )
 
-def install_bundler(runtime_ctx, bundler_version):
+def install_bundler(runtime_ctx):
     args = [
         runtime_ctx.interpreter,
         SCRIPT_INSTALL_BUNDLER,
-        bundler_version,
+        runtime_ctx.bundler_version,
     ]
     result = runtime_ctx.ctx.execute(args, environment = runtime_ctx.environment, quiet = False)
     if result.return_code:
@@ -84,20 +83,19 @@ def _rb_bundle_impl(ctx):
     ctx.symlink(ctx.attr._install_bundler, SCRIPT_INSTALL_BUNDLER)
     ctx.symlink(ctx.attr._activate_gems, SCRIPT_ACTIVATE_GEMS)
 
-    bundler_version = ctx.attr.bundler_version
-
     # Setup this provider that we pass around between functions for convenience
     runtime_ctx = RubyRuntimeContext(
         ctx = ctx,
         interpreter = ctx.path(ctx.attr.ruby_interpreter),
         environment = {"RUBYOPT": "--enable-gems"},
+        bundler_version = ctx.attr.bundler_version,
     )
 
     # 1. Install the right version of the Bundler Gem
-    install_bundler(runtime_ctx, bundler_version)
+    install_bundler(runtime_ctx)
 
     # Create label for the Bundler executable
-    bundler = Label("//:" + BUNDLE_BINARY)
+    bundler = Label("//:bundler/gems/bundler-{}/exe/bundle".format(runtime_ctx.bundler_version))
 
     # Run bundle install
     bundle_install(runtime_ctx)
