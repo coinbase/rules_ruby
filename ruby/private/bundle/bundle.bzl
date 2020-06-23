@@ -27,7 +27,7 @@ def run_bundler(runtime_ctx, bundler_arguments):
         args,
         quiet = False,
         # Need to run this command with GEM_HOME set so tgat the bin stubs can load the correct bundler
-        environment = {"GEM_HOME": "bundler"},
+        environment = {"GEM_HOME": "bundler", "GEM_PATH": "bundler"},
     )
 
 def install_bundler(runtime_ctx, bundler_version):
@@ -71,7 +71,7 @@ def generate_bundle_build_file(runtime_ctx):
         args,
         # The build file generation script requires bundler so we add this to make
         # the correct version of bundler available
-        environment = {"GEM_HOME": "bundler"},
+        environment = {"GEM_HOME": "bundler", "GEM_PATH": "bundler"},
         quiet = False,
     )
     if result.return_code:
