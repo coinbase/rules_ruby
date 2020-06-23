@@ -26,8 +26,8 @@ def run_bundler(runtime_ctx, bundler_arguments):
     return runtime_ctx.ctx.execute(
         args,
         quiet = False,
-        # Need to put our bundler folder on the path for it to be able to bundle install
-        environment = {"GEM_PATH": "bundler"},
+        # Need to run this command with GEM_HOME set so tgat the bin stubs can load the correct bundler
+        environment = {"GEM_HOME": "bundler"},
     )
 
 def install_bundler(runtime_ctx, bundler_version):
@@ -67,7 +67,13 @@ def generate_bundle_build_file(runtime_ctx):
         RULES_RUBY_WORKSPACE_NAME,
     ]
 
-    result = runtime_ctx.ctx.execute(args, quiet = False)
+    result = runtime_ctx.ctx.execute(
+        args,
+        # The build file generation script requires bundler so we add this to make
+        # the correct version of bundler available
+        environment = {"GEM_HOME": "bundler"},
+        quiet = False,
+    )
     if result.return_code:
         fail("build file generation failed: %s%s" % (result.stdout, result.stderr))
 
