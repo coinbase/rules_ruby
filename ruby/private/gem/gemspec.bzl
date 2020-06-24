@@ -93,7 +93,11 @@ _ATTRS = {
     "gem_deps": attr.label_list(
         allow_files = True,
     ),
-    "gem_runtime_dependencies": attr.string_list(),
+    "gem_runtime_dependencies": attr.string_list(
+        mandatory = False,
+        allow_empty = True,
+        default = [],
+    ),
     "require_paths": attr.string_list(),
     "_gemspec_template": attr.label(
         allow_single_file = True,

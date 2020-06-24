@@ -6,5 +6,6 @@ Gem::Specification.new do |s|
   s.licenses                 = {licenses}
   s.files                    = {srcs}
   s.require_paths            = {require_paths}
-  s.gem_runtime_dependencies = {gem_runtime_dependencies}
+
+  {gem_runtime_dependencies}
 end

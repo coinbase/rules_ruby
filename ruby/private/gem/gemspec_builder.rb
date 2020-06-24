@@ -44,14 +44,18 @@ def parse_require_paths(metadata)
   metadata
 end
 
+def _parse_gem_dependency(gem)
+  'spec.add_runtime_dependency ' + gem
+end
+
 def parse_gem_runtime_dependencies(metadata)
+  dependency_list = []
   if metadata['gem_runtime_dependencies'] != []
-    output = ""
     metadata['gem_runtime_dependencies'].each do |gem|
-      output += "\n" + "spec.add_runtime_dependency "+ gem
+      dependency_list.append(_parse_gem_dependency(gem))
     end
-    metadata['gem_runtime_dependencies'] = output
   end
+  metadata['gem_runtime_dependencies'] = dependency_list.join("\n  ")
   metadata
 end
 
@@ -90,6 +94,7 @@ def main
     filtered_data = filtered_data.gsub(replace_val, value.to_s)
   end
 
+  puts filtered_data
   File.open(output_file, 'w') do |out_file|
     out_file.write(filtered_data)
   end
