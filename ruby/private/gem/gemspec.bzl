@@ -38,6 +38,7 @@ def _rb_gem_impl(ctx):
             version = ctx.attr.version,
             licenses = ctx.attr.licenses,
             require_paths = ctx.attr.require_paths,
+            gem_runtime_dependencies = ctx.attr.gem_runtime_dependencies,
         ).to_json(),
     )
 
@@ -92,6 +93,7 @@ _ATTRS = {
     "gem_deps": attr.label_list(
         allow_files = True,
     ),
+    "gem_runtime_dependencies": attr.string_list(),
     "require_paths": attr.string_list(),
     "_gemspec_template": attr.label(
         allow_single_file = True,

@@ -31,6 +31,7 @@ def parse_metadata(metadata)
   # Expand all of the sources first
   metadata = expand_src_dirs(metadata)
   metadata = parse_require_paths(metadata)
+  metadata = parse_gem_runtime_dependencies(metadata)
   metadata
 end
 
@@ -39,6 +40,17 @@ def parse_require_paths(metadata)
     metadata['srcs'].each do |f|
       metadata['require_paths'] << File.dirname(f) if File.basename(f, '.rb') == metadata['name']
     end
+  end
+  metadata
+end
+
+def parse_gem_runtime_dependencies(metadata)
+  if metadata['gem_runtime_dependencies'] != []
+    output = ""
+    metadata['gem_runtime_dependencies'].each do |gem|
+      output += "\n" + "spec.add_runtime_dependency "+ gem
+    end
+    metadata['gem_runtime_dependencies'] = output
   end
   metadata
 end

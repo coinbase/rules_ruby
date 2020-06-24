@@ -29,6 +29,10 @@ rb_gemspec(
     name = "example_gem",
     authors = ["Coinbase"],
     gem_name = "example_gem",
+    gem_runtime_dependencies = [
+        "'example1', '~> 1.1', '>= 1.1.4'",
+        "'example2', '~> 1.0'",
+    ],
     version = "0.1.0",
     deps = [
         "//ruby/tests/gemspec/lib:example_gem",
