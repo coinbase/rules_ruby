@@ -7,5 +7,5 @@ Gem::Specification.new do |s|
   s.files                    = ["ruby/tests/gemspec/lib/foo/bar.rb", "ruby/tests/gemspec/lib/example_gem.rb"]
   s.require_paths            = []
 
-
+  
 end
