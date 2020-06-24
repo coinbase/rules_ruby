@@ -94,7 +94,6 @@ def main
     filtered_data = filtered_data.gsub(replace_val, value.to_s)
   end
 
-  puts filtered_data
   File.open(output_file, 'w') do |out_file|
     out_file.write(filtered_data)
   end
