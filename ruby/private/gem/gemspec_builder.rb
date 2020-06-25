@@ -45,7 +45,7 @@ def parse_require_paths(metadata)
 end
 
 def _parse_gem_dependency(gem)
-  'spec.add_runtime_dependency ' + gem
+  's.add_runtime_dependency ' + gem
 end
 
 def parse_gem_runtime_dependencies(metadata)
