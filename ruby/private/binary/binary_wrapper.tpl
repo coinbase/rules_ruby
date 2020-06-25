@@ -98,20 +98,33 @@ def find_gem_binary
   )
 end
 
+def setup_gem_path(runfiles)
+  # Bundle path is based on gem_path so cannot be "" if gem_path exists
+  if "{gem_path}" == ""
+    return
+  end
+  full_bundle_path = File.join(runfiles, "{bundle_path}")
+  full_gem_path = File.join(runfiles, "{gem_path}")
+
+  # Caution: The str replace in bazel is also based on {var} so may conflict with
+  # ruby str replacement.
+  ENV["GEM_PATH"] = "#{full_gem_path}:#{full_bundle_path}"
+  ENV["GEM_HOME"] = "#{full_gem_path}"
+end
+
 def main(args)
-  custom_loadpaths = {loadpaths}
   runfiles = find_runfiles
 
+  runfiles_envkey, runfiles_envvalue = runfiles_envvar(runfiles)
+  ENV[runfiles_envkey] = runfiles_envvalue if runfiles_envkey
+
+  custom_loadpaths = {loadpaths}
   loadpaths = create_loadpath_entries(custom_loadpaths, runfiles)
   loadpaths += get_repository_imports(runfiles)
   loadpaths += ENV['RUBYLIB'].split(':') if ENV.key?('RUBYLIB')
   ENV['RUBYLIB'] = loadpaths.join(':')
 
-  runfiles_envkey, runfiles_envvalue = runfiles_envvar(runfiles)
-  ENV[runfiles_envkey] = runfiles_envvalue if runfiles_envkey
-
-  ENV["GEM_PATH"] = File.join(runfiles, "{gem_path}") if "{gem_path}" != ""
-  ENV["GEM_HOME"] = File.join(runfiles, "{gem_path}") if "{gem_path}" != ""
+  setup_gem_path(runfiles)
 
   ruby_program = find_rb_binary
 
@@ -137,13 +150,11 @@ def main(args)
     puts "Running pristine on {gems_to_pristine}"
     system(gem_program + " pristine {gems_to_pristine}")
   end
-
   if "{run_under}" != "" then
     Dir.chdir("{run_under}")
   end
 
   exec(ruby_program, *rubyopt, main, *args)
-  # TODO(yugui) Support windows
 end
 
 if __FILE__ == $0

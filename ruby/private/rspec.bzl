@@ -6,7 +6,7 @@ load(
     "RSPEC_ATTRS",
     "TOOLCHAIN_TYPE_NAME",
 )
-load(":binary.bzl", "rb_binary_macro")
+load("//ruby/private/binary:binary.bzl", "rb_binary_macro")
 
 def rb_rspec(
         name,

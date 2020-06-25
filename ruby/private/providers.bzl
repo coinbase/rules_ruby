@@ -12,6 +12,7 @@ RubyRuntimeContext = provider(
         "ctx",
         "interpreter",
         "environment",
+        "bundler_version",
     ],
 )
 

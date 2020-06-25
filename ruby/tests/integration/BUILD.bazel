@@ -1,0 +1,42 @@
+package(default_visibility = ["//:__subpackages__"])
+
+load(
+    "@coinbase_rules_ruby//ruby:defs.bzl",
+    "rb_binary",
+    "rb_library",
+    "rb_rspec",
+    "rb_test",
+    "rubocop",
+)
+
+# A ruby script that is depending on a Gem and another folders rb_library
+rb_binary(
+    name = "bin",
+    srcs = ["script.rb"],
+    main = "script.rb",
+    deps = [
+        "//lib:foo",
+    ],
+)
+
+rb_test(
+    name = "rb_default_test",
+    srcs = [
+        "script.rb",
+        "//lib:foo",
+    ] + glob([
+        "spec/**/*.rb",
+    ]),
+    args = [
+        "spec",
+    ],
+    main = "@integration_test_bundle//:bin/rspec",
+    tags = [
+        "exclusive",
+        "external",
+    ],
+    deps = [
+        "@integration_test_bundle//:rspec",
+        "@integration_test_bundle//:rspec-its",
+    ],
+)

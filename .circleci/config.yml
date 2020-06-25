@@ -80,6 +80,15 @@ jobs:
       - run:
           name: "Build all"
           command: bazel build //...:all
+  
+  bazel_test_integration_test_workspace:
+    executor: base-executor
+    working_directory: ~/project/ruby/tests/integration
+    steps:
+      - checkout:
+          path: ~/project
+      - setup-bazel-env
+      - bazel-build-test-all
 
 
   buildifier:
@@ -100,5 +109,6 @@ workflows:
       - bazel_build_workspace
       - bazel_build_examples_simple_script
       - bazel_build_examples_gem
+      - bazel_test_integration_test_workspace
       - buildifier
       - rubocop

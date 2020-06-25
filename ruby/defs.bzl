@@ -7,7 +7,7 @@ load(
     _library = "rb_library",
 )
 load(
-    "@coinbase_rules_ruby//ruby/private:binary.bzl",
+    "@coinbase_rules_ruby//ruby/private/binary:binary.bzl",
     _binary = "rb_binary",
     _test = "rb_test",
 )
