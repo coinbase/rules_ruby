@@ -13,4 +13,5 @@ rb_gem(
     deps = [
         "//lib:example_gem",
     ],
+    gem_runtime_dependencies = ["'example1', '~> 1.1', '>= 1.1.4'"],
 )
