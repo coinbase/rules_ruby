@@ -22,6 +22,8 @@ TEMPLATE = <<~MAIN_TEMPLATE
         "bundler/**/*",
       ],
     ),
+    includes = ["bundler/gems/bundler-{bundler_version}/lib"],
+    rubyopt = ["-r{runfiles_path}/bundler/gems/bundler-{bundler_version}/lib/bundler.rb"],
   )
 
   # PULL EACH GEM INDIVIDUALLY
@@ -73,10 +75,12 @@ class BundleBuildFileGenerator
               :build_file,
               :gemfile_lock,
               :excludes,
-              :ruby_version
+              :ruby_version,
+              :bundler_version
 
   def initialize(workspace_name:,
                  repo_name:,
+                 bundler_version:,
                  build_file: 'BUILD.bazel',
                  gemfile_lock: 'Gemfile.lock',
                  excludes: nil)
@@ -85,6 +89,7 @@ class BundleBuildFileGenerator
     @build_file     = build_file
     @gemfile_lock   = gemfile_lock
     @excludes       = excludes
+    @bundler_version = bundler_version
     # This attribute returns 0 as the third minor version number, which happens to be
     # what Ruby uses in the PATH to gems, eg. ruby 2.6.5 would have a folder called
     # ruby/2.6.0/gems for all minor versions of 2.6.*
@@ -111,6 +116,7 @@ class BundleBuildFileGenerator
       .gsub('{ruby_version}', ruby_version)
       .gsub('{binaries}', binaries.to_s)
       .gsub('{runfiles_path}', runfiles_path)
+      .gsub('{bundler_version}', bundler_version)
 
     # strip bundler version so we can process this file
     remove_bundler_version!
@@ -166,17 +172,18 @@ class BundleBuildFileGenerator
 end
 
 if $PROGRAM_NAME == __FILE__
-  if ARGV.length != 5
-    warn("USAGE: #{$PROGRAM_NAME} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name")
+  if ARGV.length != 6
+    warn("USAGE: #{$PROGRAM_NAME} BUILD.bazel Gemfile.lock repo-name [excludes-json] workspace-name bundler-version")
     exit(1)
   end
 
-  build_file, gemfile_lock, repo_name, excludes, workspace_name, * = *ARGV
+  build_file, gemfile_lock, repo_name, excludes, workspace_name, bundler_version, * = *ARGV
 
   BundleBuildFileGenerator.new(build_file: build_file,
                                gemfile_lock: gemfile_lock,
                                repo_name: repo_name,
                                excludes: JSON.parse(excludes),
-                               workspace_name: workspace_name)
-                          .generate!
+                               workspace_name: workspace_name,
+                               bundler_version: bundler_version
+                          ).generate!
 end

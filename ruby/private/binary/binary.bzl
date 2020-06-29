@@ -18,8 +18,11 @@ def _get_gem_path(incpaths):
     """
     if len(incpaths) == 0:
         return ""
-    incpath = incpaths[0]
-    return incpath.rsplit("/", 3)[0]
+    # This may cause issues if the only gem is bundler... but we will cross that bridge when we come to it
+    for incpath in incpaths:
+      if "/lib/ruby/" in incpath and "/gems/" in incpath:
+        return incpath.rsplit("/", 3)[0]
+    fail("Could not find gem path from include path")
 
 def _get_bundle_path(gem_path):
     """
