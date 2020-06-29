@@ -64,6 +64,7 @@ def generate_bundle_build_file(runtime_ctx):
         runtime_ctx.ctx.name,  # Name of the target
         repr(runtime_ctx.ctx.attr.excludes),
         RULES_RUBY_WORKSPACE_NAME,
+        runtime_ctx.bundler_version,
     ]
 
     result = runtime_ctx.ctx.execute(
