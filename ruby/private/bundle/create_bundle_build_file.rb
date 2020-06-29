@@ -78,12 +78,14 @@ class BundleBuildFileGenerator
               :ruby_version,
               :bundler_version
 
+  # rubocop:disable Metrics/ParameterLists
   def initialize(workspace_name:,
                  repo_name:,
                  bundler_version:,
                  build_file: 'BUILD.bazel',
                  gemfile_lock: 'Gemfile.lock',
                  excludes: nil)
+    # rubocop:enable Metrics/ParameterLists
     @workspace_name = workspace_name
     @repo_name      = repo_name
     @build_file     = build_file
@@ -184,6 +186,5 @@ if $PROGRAM_NAME == __FILE__
                                repo_name: repo_name,
                                excludes: JSON.parse(excludes),
                                workspace_name: workspace_name,
-                               bundler_version: bundler_version
-                          ).generate!
+                               bundler_version: bundler_version).generate!
 end

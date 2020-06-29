@@ -19,8 +19,9 @@ def _get_gem_path(incpaths):
     if len(incpaths) == 0:
         return ""
     for incpath in incpaths:
-      if "/lib/ruby/" in incpath and "/gems/" in incpath:
-        return incpath.rsplit("/", 3)[0]
+        if "/lib/ruby/" in incpath and "/gems/" in incpath:
+            return incpath.rsplit("/", 3)[0]
+
     # if none match the lib ruby setup then we will default to the first one
     return incpaths[0].rsplit("/", 3)[0]
 
