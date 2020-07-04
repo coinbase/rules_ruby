@@ -22,11 +22,21 @@ def run_bundler(runtime_ctx, bundler_arguments):
         "bundler/gems/bundler-{}/exe/bundle".format(runtime_ctx.bundler_version),  # our binary
     ] + bundler_arguments
 
+    kwargs = {}
+
+    if "BUNDLER_TIMEOUT" in runtime_ctx.ctx.os.environ:
+        timeout_in_secs = runtime_ctx.ctx.os.environ["BUNDLER_TIMEOUT"]
+        if timeout_in_secs.isdigit():
+            kwargs["timeout"] = int(timeout_in_secs)
+        else:
+            fail("'%s' is invalid value for BUNDLER_TIMEOUT. Must be an integer." % (timeout_in_secs))
+
     return runtime_ctx.ctx.execute(
         args,
         quiet = False,
         # Need to run this command with GEM_HOME set so tgat the bin stubs can load the correct bundler
         environment = {"GEM_HOME": "bundler", "GEM_PATH": "bundler"},
+        **kwargs
     )
 
 def install_bundler(runtime_ctx):
