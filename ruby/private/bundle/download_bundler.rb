@@ -9,6 +9,7 @@ def main
 
   args = [
     'install',
+    '--no-document',
     '--install-dir',
     'bundler',
     "bundler:#{bundler_version}"

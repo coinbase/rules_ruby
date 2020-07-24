@@ -57,6 +57,7 @@ def bundle_install(runtime_ctx):
             "--standalone",  # Makes a bundle that can work without depending on Rubygems or Bundler at runtime.
             "--binstubs={}".format(BUNDLE_BIN_PATH),  # Creates a directory and place any executables from the gem there.
             "--path={}".format(BUNDLE_PATH),  # The location to install the specified gems to.
+            "--jobs=10", # run a few jobs to ensure no gem install is blocking another
         ],
     )
 
