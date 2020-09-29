@@ -14,7 +14,7 @@ def _get_transitive_srcs(srcs, deps):
         transitive = [dep[RubyLibrary].transitive_ruby_srcs for dep in deps],
     )
 
-def _rb_gem_impl(ctx):
+def _rb_gemspec_impl(ctx):
     gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
     metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
 
@@ -22,11 +22,12 @@ def _rb_gem_impl(ctx):
     file_deps = _get_transitive_srcs([], ctx.attr.deps).to_list()
     for f in file_deps:
         # For some files the src_path and dest_path will be the same, but
-        # for othrs the src_path will be in bazel)out while the dest_path
+        # for others the src_path will be in bazel-out while the dest_path
         # will be from the workspace root.
+        dest_path = _dest_path(f, ctx.label.package)
         _ruby_files.append({
             "src_path": f.path,
-            "dest_path": f.short_path,
+            "dest_path": dest_path,
         })
 
     ctx.actions.write(
@@ -101,7 +102,7 @@ _ATTRS = {
     "require_paths": attr.string_list(),
     "_gemspec_template": attr.label(
         allow_single_file = True,
-        default = "gemspec_template.tpl",
+        default = ":gemspec_template.tpl",
     ),
     "ruby_sdk": attr.string(
         default = "@org_ruby_lang_ruby_toolchain",
@@ -113,13 +114,13 @@ _ATTRS = {
         cfg = "host",
     ),
     "_gemspec_builder": attr.label(
-        default = Label("@coinbase_rules_ruby//ruby/private/gem:gemspec_builder.rb"),
+        default = ":gemspec_builder.rb",
         allow_single_file = True,
     ),
 }
 
 rb_gemspec = rule(
-    implementation = _rb_gem_impl,
+    implementation = _rb_gemspec_impl,
     attrs = _ATTRS,
     provides = [DefaultInfo, RubyGem],
 )

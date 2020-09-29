@@ -64,19 +64,25 @@ def expand_src_dirs(metadata)
   # cannot handle. This will convert directories to individual files
   srcs = metadata['raw_srcs']
   new_srcs = []
+  dests = []
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
     if File.directory?(src_path)
       Dir.glob("#{src_path}/**/*") do |f|
         # expand the directory, replacing each src path with its dest path
-        new_srcs << f.gsub(src_path, dest_path) if File.file?(f)
+        if File.file?(f)
+          g = f.gsub(src_path, dest_path)
+          new_srcs << g
+          dests << g.sub(/^[^\/]+\//, '')
+        end
       end
     elsif File.file?(src_path)
       new_srcs << dest_path
     end
   end
   metadata['srcs'] = new_srcs
+  metadata['dests'] = dests
   metadata
 end
 

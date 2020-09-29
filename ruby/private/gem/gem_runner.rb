@@ -37,6 +37,18 @@ def copy_srcs(dir, srcs, verbose)
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
+
+    if File.directory?(src_path)
+      # Lop off the leading path element.
+      # If that was the only path element,
+      # copy the source dir's contents to the dest,
+      # rather than the source itself.
+      dest_path = dest_path.split('/', 2)[1..].join('/')
+      if dest_path == ''
+        src_path += '/.'
+      end
+    end
+
     tmpname = File.join(dir, File.dirname(dest_path))
     FileUtils.mkdir_p(tmpname)
     puts "copying #{src_path} to #{tmpname}" if verbose

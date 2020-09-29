@@ -12,9 +12,10 @@ def _rb_build_gem_impl(ctx):
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
+            dest_path = _dest_path(f, ctx.label.package)
             _srcs.append({
                 "src_path": f.path,
-                "dest_path": f.short_path,
+                "dest_path": dest_path,
             })
 
     ctx.actions.write(
@@ -56,7 +57,7 @@ _ATTRS = {
         cfg = "host",
     ),
     "_gem_runner": attr.label(
-        default = Label("@coinbase_rules_ruby//ruby/private/gem:gem_runner.rb"),
+        default = ":gem_runner.rb",
         allow_single_file = True,
     ),
     "gemspec": attr.label(

@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.authors                  = {authors}
   s.version                  = "{version}"
   s.licenses                 = {licenses}
-  s.files                    = {srcs}
+  s.files                    = {dests}
   s.require_paths            = {require_paths}
 
   {gem_runtime_dependencies}
