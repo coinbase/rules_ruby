@@ -1,3 +1,6 @@
+# Emacs backup files
+*~
+
 # Bazel Ignores
 **/bazel-*
 .bazelrc.user

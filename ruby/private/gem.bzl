@@ -11,12 +11,14 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
     _gemspec_name = name + "_gemspec"
     deps = kwargs.get("deps", [])
     source_date_epoch = kwargs.pop("source_date_epoch", None)
+    strip_package = kwargs.pop("strip_package", "")
     verbose = kwargs.pop("verbose", False)
 
     _rb_gemspec(
         name = _gemspec_name,
         gem_name = gem_name,
         version = version,
+        strip_package = strip_package,
         **kwargs
     )
 
@@ -28,5 +30,6 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
         deps = srcs + deps,
         visibility = ["//visibility:public"],
         source_date_epoch = source_date_epoch,
+        strip_package = strip_package,
         verbose = verbose,
     )

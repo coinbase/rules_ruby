@@ -31,14 +31,14 @@ def parse_opts
   metadata_file
 end
 
-def copy_srcs(dir, srcs, verbose)
+def copy_srcs(dir, srcs, verbose, do_strip)
   # Sources need to be moved from their bazel_out locations
   # to the correct folder in the ruby gem.
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
 
-    if File.directory?(src_path)
+    if do_strip and File.directory?(src_path)
       # Lop off the leading path element.
       # If that was the only path element,
       # copy the source dir's contents to the dest,
@@ -92,8 +92,9 @@ def build_gem(metadata)
   # We copy all related files to a tmpdir, build the entire gem in that tmpdir
   # and then copy the output gem into the correct bazel output location.
   verbose = metadata['verbose']
+  do_strip = metadata['do_strip']
   Dir.mktmpdir do |dir|
-    copy_srcs(dir, metadata['srcs'], verbose)
+    copy_srcs(dir, metadata['srcs'], verbose, do_strip)
     copy_gemspec(dir, metadata['gemspec_path'])
     do_build(dir, metadata['gemspec_path'], metadata['output_path'])
   end

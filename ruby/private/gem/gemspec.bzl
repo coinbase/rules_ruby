@@ -7,6 +7,7 @@ load(
     "RubyGem",
     "RubyLibrary",
 )
+load("//ruby/private/gem:dest_path.bzl", _dest_path = "dest_path")
 
 def _get_transitive_srcs(srcs, deps):
     return depset(
@@ -20,11 +21,14 @@ def _rb_gemspec_impl(ctx):
 
     _ruby_files = []
     file_deps = _get_transitive_srcs([], ctx.attr.deps).to_list()
+
+    strip_package = ctx.attr.strip_package
+
     for f in file_deps:
         # For some files the src_path and dest_path will be the same, but
         # for others the src_path will be in bazel-out while the dest_path
         # will be from the workspace root.
-        dest_path = _dest_path(f, ctx.label.package)
+        dest_path = _dest_path(f, strip_package)
         _ruby_files.append({
             "src_path": f.path,
             "dest_path": dest_path,
@@ -40,6 +44,7 @@ def _rb_gemspec_impl(ctx):
             licenses = ctx.attr.licenses,
             require_paths = ctx.attr.require_paths,
             gem_runtime_dependencies = ctx.attr.gem_runtime_dependencies,
+            do_strip = (strip_package != ""),
         ).to_json(),
     )
 
@@ -116,6 +121,10 @@ _ATTRS = {
     "_gemspec_builder": attr.label(
         default = ":gemspec_builder.rb",
         allow_single_file = True,
+    ),
+    "strip_package": attr.string(
+            default = "",
+            doc = "strip this dir prefix from file paths added to the gem, such as package_name()",
     ),
 }
 

@@ -1,4 +1,5 @@
 load("//ruby/private:providers.bzl", "RubyGem")
+load("//ruby/private/gem:dest_path.bzl", _dest_path = "dest_path")
 
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
@@ -8,15 +9,20 @@ def _rb_build_gem_impl(ctx):
 
     _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
     _srcs = []
+
+    strip_package = ctx.attr.strip_package
+
     for dep in ctx.attr.deps:
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
-            dest_path = _dest_path(f, ctx.label.package)
+            dest_path = _dest_path(f, strip_package)
             _srcs.append({
                 "src_path": f.path,
                 "dest_path": dest_path,
             })
+
+    do_strip = (strip_package != "")
 
     ctx.actions.write(
         output = metadata_file,
@@ -26,6 +32,7 @@ def _rb_build_gem_impl(ctx):
             output_path = ctx.outputs.gem.path,
             source_date_epoch = ctx.attr.source_date_epoch,
             verbose = ctx.attr.verbose,
+            do_strip = do_strip,
         ).to_json(),
     )
 
@@ -71,6 +78,10 @@ _ATTRS = {
     "version": attr.string(),
     "source_date_epoch": attr.string(
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
+    ),
+    "strip_package": attr.string(
+            default = "",
+            doc = "strip this dir prefix from file paths added to the gem, such as package_name()",
     ),
     "verbose": attr.bool(default = False),
 }
