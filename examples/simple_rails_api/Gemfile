@@ -23,7 +23,10 @@ gem 'puma', '~> 4.3'
 # gem 'image_processing', '~> 1.2'
 
 # CVE-2020-8185
-gem 'actionpack', '>= 6.0.3.2'
+gem 'actionpack', '>= 6.0.3.3'
+
+# CVE-2020-15169
+gem 'actionview', '>= 6.0.3.3'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
