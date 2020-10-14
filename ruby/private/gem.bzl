@@ -7,10 +7,11 @@ load(
     _rb_build_gem = "rb_build_gem",
 )
 
-def rb_gem(name, version, gem_name, srcs = [], **kwargs):
+def rb_gem(name, version, gem_name, **kwargs):
     _gemspec_name = name + "_gemspec"
     deps = kwargs.get("deps", [])
     source_date_epoch = kwargs.pop("source_date_epoch", None)
+    srcs = kwargs.pop("src", [])
     strip_paths = kwargs.pop("strip_paths", [])
     verbose = kwargs.pop("verbose", False)
 

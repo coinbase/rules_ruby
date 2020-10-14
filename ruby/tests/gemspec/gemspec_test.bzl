@@ -4,7 +4,7 @@ load("//ruby:defs.bzl", "rb_gem", "rb_gemspec")
 
 def gemspec_test(name, **kwargs):
     if not name.endswith("_test"):
-      fail("Gemspec test must end with '_test'")
+        fail("Gemspec test must end with '_test'")
 
     base_name = name.replace("_test", "")
     gem_name = "{}_gem".format(base_name)
