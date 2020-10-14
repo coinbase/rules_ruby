@@ -11,10 +11,10 @@ def rb_gem(name, version, gem_name, srcs = [], **kwargs):
     _gemspec_name = name + "_gemspec"
     deps = kwargs.get("deps", [])
     source_date_epoch = kwargs.pop("source_date_epoch", None)
+    strip_paths = kwargs.pop("strip_paths", [])
     verbose = kwargs.pop("verbose", False)
 
-    strip_paths = []
-    if "strip_paths" in kwargs and "require_paths" not in kwargs:
+    if strip_paths and "require_paths" not in kwargs:
         fail("Must specify 'require_paths' when using the 'strip_paths' argument")
 
     _rb_gemspec(
