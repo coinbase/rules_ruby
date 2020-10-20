@@ -1,4 +1,5 @@
 load("//ruby/private:providers.bzl", "RubyGem")
+load("//ruby/private/tools:paths.bzl", "strip_short_path")
 
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
@@ -12,9 +13,10 @@ def _rb_build_gem_impl(ctx):
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
+            dest_path = strip_short_path(f.short_path, ctx.attr.strip_paths)
             _srcs.append({
                 "src_path": f.path,
-                "dest_path": f.short_path,
+                "dest_path": dest_path,
             })
 
     ctx.actions.write(
@@ -71,6 +73,7 @@ _ATTRS = {
     "source_date_epoch": attr.string(
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
+    "strip_paths": attr.string_list(),
     "verbose": attr.bool(default = False),
 }
 

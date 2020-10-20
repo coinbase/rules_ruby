@@ -2,6 +2,7 @@ load(
     "//ruby/private/tools:deps.bzl",
     _transitive_deps = "transitive_deps",
 )
+load("//ruby/private/tools:paths.bzl", "strip_short_path")
 load(
     "//ruby/private:providers.bzl",
     "RubyGem",
@@ -24,9 +25,10 @@ def _rb_gem_impl(ctx):
         # For some files the src_path and dest_path will be the same, but
         # for othrs the src_path will be in bazel)out while the dest_path
         # will be from the workspace root.
+        dest_path = strip_short_path(f.short_path, ctx.attr.strip_paths)
         _ruby_files.append({
             "src_path": f.path,
-            "dest_path": f.short_path,
+            "dest_path": dest_path,
         })
 
     ctx.actions.write(
@@ -99,6 +101,7 @@ _ATTRS = {
         default = [],
     ),
     "require_paths": attr.string_list(),
+    "strip_paths": attr.string_list(),
     "_gemspec_template": attr.label(
         allow_single_file = True,
         default = "gemspec_template.tpl",
