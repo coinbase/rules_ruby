@@ -16,8 +16,6 @@ def _get_transitive_srcs(srcs, deps):
     )
 
 def _rb_gemspec_impl(ctx):
-    print("xxx _rb_gemspec_impl ctx.label.package {}".format(ctx.label.package))
-
     gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
     metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
 
@@ -30,11 +28,7 @@ def _rb_gemspec_impl(ctx):
         _ruby_files.append({
             "src_path": f.path,
             "dest_path": shorten_for_package(f, ctx.label.package),
-            "short_path": f.short_path,
         })
-
-    print("xxx _rb_gemspec_impl _ruby_files {}".format(_ruby_files))
-    print("xxx _rb_gemspec_impl require_paths {}".format(ctx.attr.require_paths))
 
     ctx.actions.write(
         output = metadata_file,

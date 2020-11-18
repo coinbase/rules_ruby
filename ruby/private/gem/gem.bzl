@@ -4,8 +4,6 @@ load("//ruby/private/tools:paths.bzl", "shorten_for_package")
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
 def _rb_build_gem_impl(ctx):
-    print("xxx _rb_build_gem_impl ctx.label.package {}".format(ctx.label.package))
-
     metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
     gemspec = ctx.attr.gemspec[RubyGem].gemspec
 
@@ -15,15 +13,10 @@ def _rb_build_gem_impl(ctx):
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
-            print("xxx _rb_build_gem_impl f.short_path {}".format(f.short_path))
-            print("xxx _rb_build_gem_impl f.is_directory {}".format(f.is_directory))
             _srcs.append({
                 "src_path": f.path,
                 "dest_path": shorten_for_package(f, ctx.label.package),
             })
-
-    print("xxx _rb_build_gem_impl _inputs {}".format(_inputs))
-    print("xxx _rb_build_gem_impl _srcs {}".format(_srcs))
 
     ctx.actions.write(
         output = metadata_file,
