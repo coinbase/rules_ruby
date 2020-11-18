@@ -12,17 +12,12 @@ def rb_gem(name, version, gem_name, **kwargs):
     deps = kwargs.get("deps", [])
     source_date_epoch = kwargs.pop("source_date_epoch", None)
     srcs = kwargs.pop("srcs", [])
-    strip_paths = kwargs.pop("strip_paths", [])
     verbose = kwargs.pop("verbose", False)
-
-    if strip_paths and "require_paths" not in kwargs:
-        fail("Must specify 'require_paths' when using the 'strip_paths' argument")
 
     _rb_gemspec(
         name = _gemspec_name,
         gem_name = gem_name,
         version = version,
-        strip_paths = strip_paths,
         **kwargs
     )
 
@@ -34,6 +29,5 @@ def rb_gem(name, version, gem_name, **kwargs):
         deps = srcs + deps,
         visibility = ["//visibility:public"],
         source_date_epoch = source_date_epoch,
-        strip_paths = strip_paths,
         verbose = verbose,
     )

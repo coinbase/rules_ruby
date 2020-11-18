@@ -31,16 +31,32 @@ def parse_opts
   metadata_file
 end
 
-def copy_srcs(dir, srcs, verbose)
+def copy_srcs(dir, srcs, pkg, verbose)
   # Sources need to be moved from their bazel_out locations
   # to the correct folder in the ruby gem.
+  puts "xxx copy_srcs dir #{dir} pkg #{pkg}"
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
-    tmpname = File.join(dir, File.dirname(dest_path))
-    FileUtils.mkdir_p(tmpname)
-    puts "copying #{src_path} to #{tmpname}" if verbose
-    FileUtils.cp_r(src_path, tmpname)
+    puts "xxx copy_srcs src_path #{src_path} dest_path #{dest_path}"
+    if dest_path == pkg
+      tmpname = dir
+    else
+      if dest_path.start_with?(pkg+"/")
+        tmpname = File.join(dir, dest_path[pkg.length+1, dest_path.length-pkg.length-1])
+      else
+        tmpname = File.join(dir, dest_path)
+      end
+    end
+    if File.directory?(src_path)
+      puts "cp -r #{src_path}/ #{tmpname}" if verbose
+      FileUtils.mkdir_p(tmpname)
+      FileUtils.cp_r(src_path+"/.", tmpname)
+    else
+      tmpname = File.dirname(tmpname)
+      puts "cp #{src_path} #{tmpname}" if verbose
+      FileUtils.cp(src_path, tmpname)
+    end
     # Copying a directory will not dereference symlinks
     # in the directory. They need to be removed too.
     dereference_symlinks(tmpname, verbose) if File.directory?(tmpname)
@@ -68,9 +84,14 @@ def do_build(dir, gemspec_path, output_path)
     'build',
     File.join(dir, File.basename(gemspec_path))
   ]
+  puts "xxx do_build dir is #{dir} args is #{args}"
   # Older versions of rubygems work better if the
   # cwd is the root of the gem dir.
   Dir.chdir(dir) do
+    Dir.glob("**/*") do |f|
+      puts "xxx do_build found #{f}"
+    end
+
     Gem::GemRunner.new.run args
   end
   FileUtils.cp(File.join(dir, File.basename(output_path)), output_path)
@@ -79,9 +100,10 @@ end
 def build_gem(metadata)
   # We copy all related files to a tmpdir, build the entire gem in that tmpdir
   # and then copy the output gem into the correct bazel output location.
+  puts "xxx build_gem metadata #{metadata}"
   verbose = metadata['verbose']
   Dir.mktmpdir do |dir|
-    copy_srcs(dir, metadata['srcs'], verbose)
+    copy_srcs(dir, metadata['srcs'], metadata['package'], verbose)
     copy_gemspec(dir, metadata['gemspec_path'])
     do_build(dir, metadata['gemspec_path'], metadata['output_path'])
   end

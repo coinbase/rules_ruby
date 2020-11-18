@@ -2,12 +2,12 @@ load(
     "//ruby/private/tools:deps.bzl",
     _transitive_deps = "transitive_deps",
 )
-load("//ruby/private/tools:paths.bzl", "strip_short_path")
 load(
     "//ruby/private:providers.bzl",
     "RubyGem",
     "RubyLibrary",
 )
+load("//ruby/private/tools:paths.bzl", "shorten_for_package")
 
 def _get_transitive_srcs(srcs, deps):
     return depset(
@@ -15,7 +15,9 @@ def _get_transitive_srcs(srcs, deps):
         transitive = [dep[RubyLibrary].transitive_ruby_srcs for dep in deps],
     )
 
-def _rb_gem_impl(ctx):
+def _rb_gemspec_impl(ctx):
+    print("xxx _rb_gemspec_impl ctx.label.package {}".format(ctx.label.package))
+
     gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
     metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
 
@@ -25,11 +27,14 @@ def _rb_gem_impl(ctx):
         # For some files the src_path and dest_path will be the same, but
         # for othrs the src_path will be in bazel)out while the dest_path
         # will be from the workspace root.
-        dest_path = strip_short_path(f.short_path, ctx.attr.strip_paths)
         _ruby_files.append({
             "src_path": f.path,
-            "dest_path": dest_path,
+            "dest_path": shorten_for_package(f, ctx.label.package),
+            "short_path": f.short_path,
         })
+
+    print("xxx _rb_gemspec_impl _ruby_files {}".format(_ruby_files))
+    print("xxx _rb_gemspec_impl require_paths {}".format(ctx.attr.require_paths))
 
     ctx.actions.write(
         output = metadata_file,
@@ -41,6 +46,7 @@ def _rb_gem_impl(ctx):
             licenses = ctx.attr.licenses,
             require_paths = ctx.attr.require_paths,
             gem_runtime_dependencies = ctx.attr.gem_runtime_dependencies,
+            package = ctx.label.package,
         ).to_json(),
     )
 
@@ -101,7 +107,6 @@ _ATTRS = {
         default = [],
     ),
     "require_paths": attr.string_list(),
-    "strip_paths": attr.string_list(),
     "_gemspec_template": attr.label(
         allow_single_file = True,
         default = "gemspec_template.tpl",
@@ -122,7 +127,7 @@ _ATTRS = {
 }
 
 rb_gemspec = rule(
-    implementation = _rb_gem_impl,
+    implementation = _rb_gemspec_impl,
     attrs = _ATTRS,
     provides = [DefaultInfo, RubyGem],
 )

@@ -30,8 +30,11 @@ end
 def parse_metadata(metadata)
   # Expand all of the sources first
   metadata = expand_src_dirs(metadata)
+  puts "xxx expanded src dirs, metadata now #{metadata}"
   metadata = parse_require_paths(metadata)
+  puts "xxx parsed require paths, metadata now #{metadata}"
   metadata = parse_gem_runtime_dependencies(metadata)
+  puts "xxx parsed gem runtime deps, metadata now #{metadata}"
   metadata
 end
 
@@ -62,21 +65,36 @@ end
 def expand_src_dirs(metadata)
   # Files and required paths can include a directory which gemspec
   # cannot handle. This will convert directories to individual files
+  pkg = metadata['package']
+  puts "xxx expand_src_dirs pkg #{pkg}"
   srcs = metadata['raw_srcs']
   new_srcs = []
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
+    short_path = src['short_path']
+    puts "xxx expand_src_dirs src_path #{src_path} dest_path #{dest_path} short_path #{short_path}"
     if File.directory?(src_path)
       Dir.glob("#{src_path}/**/*") do |f|
         # expand the directory, replacing each src path with its dest path
-        new_srcs << f.gsub(src_path, dest_path) if File.file?(f)
+        if File.file?(f) 
+          puts "xxx expand_src_dirs f [1] #{f}"
+          if f.start_with?(src_path+"/")
+            f[0, src_path.length] = dest_path
+          end
+          if f.start_with?(pkg+"/")
+            f[0, pkg.length+1] = ""
+          end
+          puts "xxx expand_src_dirs [2] f #{f}"
+          new_srcs << f
+        end
       end
     elsif File.file?(src_path)
       new_srcs << dest_path
     end
   end
   metadata['srcs'] = new_srcs
+  puts "xxx expand_src_dirs srcs #{srcs} new_srcs #{new_srcs}"
   metadata
 end
 
