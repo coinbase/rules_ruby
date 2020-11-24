@@ -1,5 +1,5 @@
 load("//ruby/private:providers.bzl", "RubyGem")
-load("//ruby/private/tools:paths.bzl", "strip_short_path")
+load("//ruby/private/tools:paths.bzl", "shorten_for_package")
 
 # Runs gem with arbitrary arguments
 # eg: run_gem(runtime_ctx, ["install" "foo"])
@@ -7,16 +7,21 @@ def _rb_build_gem_impl(ctx):
     metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
     gemspec = ctx.attr.gemspec[RubyGem].gemspec
 
+    shorten = ctx.attr.shorten
+
     _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
     _srcs = []
     for dep in ctx.attr.deps:
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
-            dest_path = strip_short_path(f.short_path, ctx.attr.strip_paths)
+            if shorten:
+                dest_path = shorten_for_package(f, ctx.label.package)
+            else:
+                dest_path = f.short_path
             _srcs.append({
                 "src_path": f.path,
-                "dest_path": dest_path,
+                "dest_path": shorten_for_package(f, ctx.label.package),
             })
 
     ctx.actions.write(
@@ -27,6 +32,7 @@ def _rb_build_gem_impl(ctx):
             output_path = ctx.outputs.gem.path,
             source_date_epoch = ctx.attr.source_date_epoch,
             verbose = ctx.attr.verbose,
+            package = ctx.label.package,
         ).to_json(),
     )
 
@@ -73,8 +79,8 @@ _ATTRS = {
     "source_date_epoch": attr.string(
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
-    "strip_paths": attr.string_list(),
     "verbose": attr.bool(default = False),
+    "shorten": attr.bool(default = False),
 }
 
 rb_build_gem = rule(

@@ -1,12 +1,15 @@
-def strip_short_path(path, strip_paths):
-    """ Given a short_path string will iterate over the
-    list of strip_paths and remove any matches returning a
-    new path string with no leading slash.
+def shorten_for_package(f, pkg):
+    """Remove `pkg` from the beginning of `f.short_path`.
+    If the result is a bare filename (with no further dir levels), return it.
+    Otherwise, remove one more dir level.
+    If that results in an empty path, return ".".
     """
-    if not strip_paths:
-        return path
-
-    for strip_path in strip_paths:
-        if path.startswith(strip_path):
-            return path.replace(strip_path, "").lstrip("/")
+    path = f.short_path
+    if path.startswith(pkg + "/"):
+        path = path[len(pkg) + 1:]
+    slash = path.find("/")
+    if slash >= 0:
+        return pkg + "/" + path[slash + 1:]
+    if f.is_directory:
+        return pkg
     return path

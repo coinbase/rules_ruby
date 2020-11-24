@@ -62,6 +62,7 @@ end
 def expand_src_dirs(metadata)
   # Files and required paths can include a directory which gemspec
   # cannot handle. This will convert directories to individual files
+  pkg = metadata['package']
   srcs = metadata['raw_srcs']
   new_srcs = []
   srcs.each do |src|
@@ -70,7 +71,11 @@ def expand_src_dirs(metadata)
     if File.directory?(src_path)
       Dir.glob("#{src_path}/**/*") do |f|
         # expand the directory, replacing each src path with its dest path
-        new_srcs << f.gsub(src_path, dest_path) if File.file?(f)
+        if File.file?(f)
+          f[0, src_path.length] = dest_path if f.start_with?(src_path + '/')
+          f[0, pkg.length + 1] = '' if f.start_with?(pkg + '/')
+          new_srcs << f
+        end
       end
     elsif File.file?(src_path)
       new_srcs << dest_path

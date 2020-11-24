@@ -31,20 +31,33 @@ def parse_opts
   metadata_file
 end
 
-def copy_srcs(dir, srcs, verbose)
+def copy_srcs(dir, srcs, pkg, verbose)
   # Sources need to be moved from their bazel_out locations
   # to the correct folder in the ruby gem.
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
-    tmpname = File.join(dir, File.dirname(dest_path))
-    FileUtils.mkdir_p(tmpname)
-    puts "copying #{src_path} to #{tmpname}" if verbose
-    FileUtils.cp_r(src_path, tmpname)
+    tmpname = get_tmpname(dir, dest_path, pkg)
+    if File.directory?(src_path)
+      puts "cp -r #{src_path}/ #{tmpname}" if verbose
+      FileUtils.mkdir_p(tmpname)
+      FileUtils.cp_r(src_path + '/.', tmpname)
+    else
+      tmpname = File.dirname(tmpname)
+      puts "cp #{src_path} #{tmpname}" if verbose
+      FileUtils.cp(src_path, tmpname)
+    end
     # Copying a directory will not dereference symlinks
     # in the directory. They need to be removed too.
     dereference_symlinks(tmpname, verbose) if File.directory?(tmpname)
   end
+end
+
+def get_tmpname(dir, dest_path, pkg)
+  return dir if dest_path == pkg
+  return File.join(dir, dest_path[pkg.length + 1, dest_path.length - pkg.length - 1]) if dest_path.start_with?(pkg + '/')
+
+  File.join(dir, dest_path)
 end
 
 def dereference_symlinks(dir, verbose)
@@ -81,7 +94,7 @@ def build_gem(metadata)
   # and then copy the output gem into the correct bazel output location.
   verbose = metadata['verbose']
   Dir.mktmpdir do |dir|
-    copy_srcs(dir, metadata['srcs'], verbose)
+    copy_srcs(dir, metadata['srcs'], metadata['package'], verbose)
     copy_gemspec(dir, metadata['gemspec_path'])
     do_build(dir, metadata['gemspec_path'], metadata['output_path'])
   end
