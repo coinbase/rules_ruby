@@ -55,7 +55,8 @@ end
 
 def get_tmpname(dir, dest_path, pkg)
   return dir if dest_path == pkg
-  return File.join(dir, dest_path[pkg.length + 1, dest_path.length-pkg.length - 1]) if dest_path.start_with?(pkg + '/')
+  return File.join(dir, dest_path[pkg.length + 1, dest_path.length - pkg.length - 1]) if dest_path.start_with?(pkg + '/')
+
   File.join(dir, dest_path)
 end
 
