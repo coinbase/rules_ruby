@@ -37,19 +37,11 @@ def copy_srcs(dir, srcs, pkg, verbose)
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
-    if dest_path == pkg
-      tmpname = dir
-    else
-      if dest_path.start_with?(pkg+"/")
-        tmpname = File.join(dir, dest_path[pkg.length+1, dest_path.length-pkg.length-1])
-      else
-        tmpname = File.join(dir, dest_path)
-      end
-    end
+    tmpname = get_tmpname(dir, dest_path, pkg)
     if File.directory?(src_path)
       puts "cp -r #{src_path}/ #{tmpname}" if verbose
       FileUtils.mkdir_p(tmpname)
-      FileUtils.cp_r(src_path+"/.", tmpname)
+      FileUtils.cp_r(src_path + '/.', tmpname)
     else
       tmpname = File.dirname(tmpname)
       puts "cp #{src_path} #{tmpname}" if verbose
@@ -59,6 +51,12 @@ def copy_srcs(dir, srcs, pkg, verbose)
     # in the directory. They need to be removed too.
     dereference_symlinks(tmpname, verbose) if File.directory?(tmpname)
   end
+end
+
+def get_tmpname(dir, dest_path, pkg)
+  return dir if dest_path == pkg
+  return File.join(dir, dest_path[pkg.length + 1, dest_path.length-pkg.length - 1]) if dest_path.start_with?(pkg + '/')
+  File.join(dir, dest_path)
 end
 
 def dereference_symlinks(dir, verbose)

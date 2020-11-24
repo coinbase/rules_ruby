@@ -68,17 +68,12 @@ def expand_src_dirs(metadata)
   srcs.each do |src|
     src_path = src['src_path']
     dest_path = src['dest_path']
-    short_path = src['short_path']
     if File.directory?(src_path)
       Dir.glob("#{src_path}/**/*") do |f|
         # expand the directory, replacing each src path with its dest path
-        if File.file?(f) 
-          if f.start_with?(src_path+"/")
-            f[0, src_path.length] = dest_path
-          end
-          if f.start_with?(pkg+"/")
-            f[0, pkg.length+1] = ""
-          end
+        if File.file?(f)
+          f[0, src_path.length] = dest_path if f.start_with?(src_path + '/')
+          f[0, pkg.length + 1] = '' if f.start_with?(pkg + '/')
           new_srcs << f
         end
       end
