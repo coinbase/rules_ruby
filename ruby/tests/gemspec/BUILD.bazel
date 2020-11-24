@@ -36,15 +36,3 @@ gemspec_test(
         "//ruby/tests/gemspec/lib:example_gem",
     ],
 )
-
-gemspec_test(
-    name = "strip_path_test",
-    authors = ["Coinbase"],
-    gem_name = "strip_path_gem",
-    require_paths = ["lib"],
-    strip_paths = ["ruby/tests/gemspec"],
-    version = "0.1.0",
-    deps = [
-        "//ruby/tests/gemspec/lib:example_gem",
-    ],
-)
