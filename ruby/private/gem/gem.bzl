@@ -7,12 +7,18 @@ def _rb_build_gem_impl(ctx):
     metadata_file = ctx.actions.declare_file("{}_build_metadata".format(ctx.attr.gem_name))
     gemspec = ctx.attr.gemspec[RubyGem].gemspec
 
+    shorten = ctx.attr.shorten
+
     _inputs = [ctx.file._gem_runner, metadata_file, gemspec]
     _srcs = []
     for dep in ctx.attr.deps:
         file_deps = dep.files.to_list()
         _inputs.extend(file_deps)
         for f in file_deps:
+            if shorten:
+                dest_path = shorten_for_package(f, ctx.label.package)
+            else:
+                dest_path = f.short_path
             _srcs.append({
                 "src_path": f.path,
                 "dest_path": shorten_for_package(f, ctx.label.package),
@@ -74,6 +80,7 @@ _ATTRS = {
         doc = "Sets source_date_epoch env var which should make output gems hermetic",
     ),
     "verbose": attr.bool(default = False),
+    "shorten": attr.bool(default = False),
 }
 
 rb_build_gem = rule(

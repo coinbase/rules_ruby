@@ -13,6 +13,7 @@ def rb_gem(name, version, gem_name, **kwargs):
     source_date_epoch = kwargs.pop("source_date_epoch", None)
     srcs = kwargs.pop("srcs", [])
     verbose = kwargs.pop("verbose", False)
+    shorten = kwargs.pop("shorten", False)
 
     _rb_gemspec(
         name = _gemspec_name,
@@ -30,4 +31,5 @@ def rb_gem(name, version, gem_name, **kwargs):
         visibility = ["//visibility:public"],
         source_date_epoch = source_date_epoch,
         verbose = verbose,
+        shorten = shorten,
     )

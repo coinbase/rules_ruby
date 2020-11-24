@@ -19,15 +19,21 @@ def _rb_gemspec_impl(ctx):
     gemspec = ctx.actions.declare_file("{}.gemspec".format(ctx.attr.gem_name))
     metadata_file = ctx.actions.declare_file("{}_metadata".format(ctx.attr.gem_name))
 
+    shorten = ctx.attr.shorten
+
     _ruby_files = []
     file_deps = _get_transitive_srcs([], ctx.attr.deps).to_list()
     for f in file_deps:
         # For some files the src_path and dest_path will be the same, but
         # for othrs the src_path will be in bazel)out while the dest_path
         # will be from the workspace root.
+        if shorten:
+            dest_path = shorten_for_package(f, ctx.label.package)
+        else:
+            dest_path = f.short_path
         _ruby_files.append({
             "src_path": f.path,
-            "dest_path": shorten_for_package(f, ctx.label.package),
+            "dest_path": dest_path,
         })
 
     ctx.actions.write(
@@ -114,6 +120,7 @@ _ATTRS = {
         executable = True,
         cfg = "host",
     ),
+    "shorten": attr.bool(default = False),
     "_gemspec_builder": attr.label(
         default = Label("@coinbase_rules_ruby//ruby/private/gem:gemspec_builder.rb"),
         allow_single_file = True,
