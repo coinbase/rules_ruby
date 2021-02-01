@@ -15,9 +15,6 @@ def rb_gem(name, version, gem_name, **kwargs):
     strip_paths = kwargs.pop("strip_paths", [])
     verbose = kwargs.pop("verbose", False)
 
-    if strip_paths and "require_paths" not in kwargs:
-        fail("Must specify 'require_paths' when using the 'strip_paths' argument")
-
     _rb_gemspec(
         name = _gemspec_name,
         gem_name = gem_name,
