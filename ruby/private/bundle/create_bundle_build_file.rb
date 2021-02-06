@@ -51,7 +51,7 @@ GEM_TEMPLATE
 
 ALL_GEMS = <<~ALL_GEMS
   rb_library(
-    name = "gems",
+    name = "all_gems",
     srcs = glob(
       {gems_lib_files},
     ),
