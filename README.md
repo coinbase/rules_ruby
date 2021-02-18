@@ -77,6 +77,7 @@ rb_bundle(
   gemfile = ":Gemfile",
   gemfile_lock = ":Gemfile.lock",
   bundler_version = "2.1.2",
+  full_index = True,
 )
 
 rb_bundle(
@@ -84,6 +85,7 @@ rb_bundle(
   gemfile = "//apps/shopping:Gemfile",
   gemfile_lock = "//apps/shopping:Gemfile.lock",
   bundler_version = "2.1.2",
+  full_index = True,
 )
 ```
 
@@ -474,6 +476,13 @@ rb_bundle(name, gemfile, gemfile_lock, bundler_version = "2.1.2")
         <code>String, optional</code>
           <p>The Version of Bundler to use. Defaults to 2.1.2.</p>
           <p>NOTE: This rule never updates the <code>Gemfile.lock</code>. It is your responsibility to generate/update <code>Gemfile.lock</code></p>
+      </td>
+    </tr>
+    <tr>
+      <td><code>full_index</code></td>
+      <td>
+        <code>Bool, optional</code>
+          <p>Set to True to add the --full-index option to the bundle install. Can improve performance.</p>
       </td>
     </tr>
   </tbody>

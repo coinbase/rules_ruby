@@ -50,16 +50,17 @@ def install_bundler(runtime_ctx):
         fail("Error installing bundler: {} {}".format(result.stdout, result.stderr))
 
 def bundle_install(runtime_ctx):
-    result = run_bundler(
-        runtime_ctx,
-        [
-            "install",  #  bundle install
-            "--standalone",  # Makes a bundle that can work without depending on Rubygems or Bundler at runtime.
-            "--binstubs={}".format(BUNDLE_BIN_PATH),  # Creates a directory and place any executables from the gem there.
-            "--path={}".format(BUNDLE_PATH),  # The location to install the specified gems to.
-            "--jobs=10",  # run a few jobs to ensure no gem install is blocking another
-        ],
-    )
+    bundler_args = [
+        "install",  #  bundle install
+        "--standalone",  # Makes a bundle that can work without depending on Rubygems or Bundler at runtime.
+        "--binstubs={}".format(BUNDLE_BIN_PATH),  # Creates a directory and place any executables from the gem there.
+        "--path={}".format(BUNDLE_PATH),  # The location to install the specified gems to.
+        "--jobs=10",  # run a few jobs to ensure no gem install is blocking another
+    ]
+
+    if runtime_ctx.ctx.attr.full_index:
+        bundler_args.append("--full-index")
+    result = run_bundler(runtime_ctx, bundler_args)
 
     if result.return_code:
         fail("bundle install failed: %s%s" % (result.stdout, result.stderr))
@@ -139,6 +140,10 @@ rb_bundle = repository_rule(
         ),
         "excludes": attr.string_list_dict(
             doc = "List of glob patterns per gem to be excluded from the library",
+        ),
+        "full_index": attr.bool(
+            default = False,
+            doc = "Use --full-index for bundle install",
         ),
         "_install_bundler": attr.label(
             default = "%s//ruby/private/bundle:%s" % (
