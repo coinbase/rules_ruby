@@ -58,7 +58,7 @@ def bundle_install(runtime_ctx):
         "--jobs=10",  # run a few jobs to ensure no gem install is blocking another
     ]
 
-    if runtime_ctx.full_index:
+    if runtime_ctx.ctx.attr.full_index:
         bundler_args.append("--full-index")
     result = run_bundler(runtime_ctx, bundler_args)
 
