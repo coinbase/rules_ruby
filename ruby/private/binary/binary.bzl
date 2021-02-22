@@ -101,10 +101,11 @@ def rb_binary_macro(ctx, main, srcs):
     )
 
 
-    f = ctx.runfiles(files = [launcher_executable])
+    runfiles = ctx.runfiles(files = [launcher_executable])
+    runfiles = runfiles.merge(deps.default_files.merge(deps.data_files))
     info = DefaultInfo(
         executable = executable,
-        runfiles = f.merge(deps.default_files.merge(deps.data_files)),
+        runfiles = runfiles,
     )
 
     return [info]
