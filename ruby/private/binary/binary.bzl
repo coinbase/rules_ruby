@@ -100,7 +100,6 @@ def rb_binary_macro(ctx, main, srcs):
         },
     )
 
-
     runfiles = ctx.runfiles(files = [launcher_executable])
     runfiles = runfiles.merge(deps.default_files.merge(deps.data_files))
     info = DefaultInfo(
