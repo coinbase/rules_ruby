@@ -8,7 +8,7 @@ if __FILE__ == $0
     exec("#{curr_dir}/{launcher_name}", {main}, *ARGV)
   end
 
-  if File.symlink?(curr_file) &&  %r!(.*\.runfiles)/.*!o =~ stub_filename
+  if File.symlink?(curr_file) &&  %r!(.*\.runfiles)/.*!o =~ curr_file
     runfiles_dir = File.dirname(File.readlink(curr_file))
     exec("#{runfiles_dir}/{launcher_name}", {main}, *ARGV)
   end
