@@ -21,7 +21,8 @@
 require 'rbconfig'
 
 def find_runfiles
-  stub_filename = File.absolute_path($0)
+  stub_dirname = File.dirname(File.absolute_path($0))
+  stub_filename = "#{stub_dirname}/{rule_name}"
   runfiles = "#{stub_filename}.runfiles"
   loop do
     case
@@ -113,6 +114,8 @@ def setup_gem_path(runfiles)
 end
 
 def main(args)
+  raise "Must provide target to launch" if args.empty?
+
   runfiles = find_runfiles
 
   runfiles_envkey, runfiles_envvalue = runfiles_envvar(runfiles)
@@ -128,7 +131,7 @@ def main(args)
 
   ruby_program = find_rb_binary
 
-  main = {main}
+  main = args.shift
   main = File.join(runfiles, main)
   rubyopt = {rubyopt}.map do |opt|
     opt.gsub(/\${(.+?)}/o) do

@@ -59,6 +59,9 @@ def rb_binary_macro(ctx, main, srcs):
 
     executable = ctx.actions.declare_file(ctx.attr.name)
 
+    launcher_name = ctx.attr.name + "-launcher"
+    launcher_executable = ctx.actions.declare_file(launcher_name)
+
     deps = _transitive_deps(
         ctx,
         extra_files = [executable],
@@ -73,12 +76,12 @@ def rb_binary_macro(ctx, main, srcs):
     rubyopt = reversed(deps.rubyopt.to_list())
 
     ctx.actions.expand_template(
-        template = ctx.file._wrapper_template,
-        output = executable,
+        template = ctx.file._launcher_template,
+        output = launcher_executable,
         substitutions = {
             "{loadpaths}": repr(deps.incpaths.to_list()),
+            "{rule_name}": ctx.attr.name,
             "{rubyopt}": repr(rubyopt),
-            "{main}": repr(_to_manifest_path(ctx, main)),
             "{interpreter}": _to_manifest_path(ctx, interpreter),
             "{gem_path}": gem_path,
             "{bundle_path}": bundle_path,
@@ -88,9 +91,20 @@ def rb_binary_macro(ctx, main, srcs):
         },
     )
 
+    ctx.actions.expand_template(
+        template = ctx.file._wrapper_template,
+        output = executable,
+        substitutions = {
+            "{launcher_name}": launcher_name,
+            "{main}": repr(_to_manifest_path(ctx, main)),
+        },
+    )
+
+    runfiles = ctx.runfiles(files = [launcher_executable])
+    runfiles = runfiles.merge(deps.default_files.merge(deps.data_files))
     info = DefaultInfo(
         executable = executable,
-        runfiles = deps.default_files.merge(deps.data_files),
+        runfiles = runfiles,
     )
 
     return [info]
