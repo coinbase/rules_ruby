@@ -2,6 +2,7 @@ package(default_visibility = ["//ruby/private:__pkg__"])
 
 exports_files(
     [
+        "binary_launcher.tpl",
         "binary_wrapper.tpl",
     ],
     visibility = ["//visibility:public"],
